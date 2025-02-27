@@ -1,0 +1,6 @@
+.container {
+   width: 28rem;
+   height: 37rem;
+   background-color: rgba(30, 30, 30, 0.8);
+   box-shadow: 4px 4px 4px #1e1e1ecc;
+}
