@@ -23,15 +23,11 @@ const HomePage = () => {
                   </p>
 
                   <div className="space-y-4">
-                     <Link
-                        to="/create"
-                        className="block w-full py-3 px-4 rounded-full bg-gradient-to-r from-purple-600 to-teal-400 text-white font-medium hover:opacity-90 transition-opacity">
+                     <Link to="/create" className="primary-btn">
                         Create Wallet
                      </Link>
 
-                     <Link
-                        to="/import"
-                        className="block w-full py-3 px-4 rounded-full bg-transparent text-white font-medium border border-gray-700 hover:bg-gray-800 transition-colors">
+                     <Link to="/import" className="secondary-btn">
                         Import Existing Wallet
                      </Link>
                   </div>

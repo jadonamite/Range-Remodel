@@ -4,3 +4,56 @@
    background-color: rgba(30, 30, 30, 0.8);
    box-shadow: 4px 4px 4px #1e1e1ecc;
 }
+.primary-btn {
+   display: inline-block;
+   color: #fff;
+   width: 90%;
+   padding: 0.75rem 1rem; /* py-3 px-4 */
+   border-radius: 9999px; /* rounded-full */
+   background-image: linear-gradient(to right, #9333ea, #2dd4bf);
+   font-weight: 500; /* font-medium */
+   transition: all 400ms ease-in-out;
+}
+.primary-btn:hover {
+   color: #fff;
+   opacity: 0.9;
+   scale: 1.05;
+
+   background-image: linear-gradient(to right, #2dd4bf, #9333ea);
+}
+.secondary-btn {
+   display: inline-block;
+   color: #fff;
+   width: 90%;
+   padding: 0.75rem 1rem; /* py-3 px-4 */
+   border-radius: 9999px; /* rounded-full */
+   font-weight: 500; /* font-medium */
+   transition: all 400ms ease-in-out;
+   position: relative;
+   padding: 0.75rem 1rem;
+   border-radius: 9999px;
+   background-color: transparent;
+   font-weight: 500;
+   z-index: 1;
+}
+
+.secondary-btn::before {
+   content: "";
+   position: absolute;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+   border-radius: 9999px;
+   padding: 2px; /* This determines border thickness */
+   background-image: linear-gradient(to right, #2dd4bf, #9333ea);
+   -webkit-mask-composite: xor;
+   mask-composite: exclude;
+   z-index: -1;
+}
+
+.secondary-btn:hover {
+   scale: 1.05;
+   opacity: 0.9;
+   color: #fff;
+}
