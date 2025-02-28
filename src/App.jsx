@@ -15,6 +15,7 @@ import SendPage from "./pages/SendPage";
 import ReceivePage from "./pages/ReceivePage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import CreatingWalletPage from "./pages/CreatingWalletPage";
 
 function App() {
    return (
@@ -24,6 +25,11 @@ function App() {
                <Route path="/" element={<HomePage />} />
                <Route path="/create" element={<CreateWalletPage />} />
                <Route path="/import" element={<ImportWalletPage />} />
+               <Route
+                  path="/creating-wallet"
+                  element={<CreatingWalletPage />}
+               />
+               ;
                <Route path="/backup" element={<BackupPage />} />
                <Route path="/wallet" element={<WalletPage />} />
                <Route path="/send" element={<SendPage />} />
