@@ -129,7 +129,7 @@ const BackupPage = () => {
 
    return (
       <div className="full-background">
-         <div className="o-container">
+         <div className="o-container full-container">
             <div className="text">
                <h1 className="text-xl font-bold mb-4">Backup Your Wallet</h1>
                <p className="text-sm mb-6">
@@ -177,7 +177,7 @@ const BackupPage = () => {
                ) : (
                   <button
                      onClick={handleNavigateToWallet}
-                     className="primary-btn w-full">
+                     className="primary-btn ">
                      Continue to Wallet
                   </button>
                )}
