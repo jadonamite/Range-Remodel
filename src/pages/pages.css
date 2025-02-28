@@ -4,14 +4,15 @@ body {
 
 .o-container {
    width: 28rem;
-   height: 32rem;
+   height: 35rem;
    background-color: rgba(30, 30, 30, 0.8);
-   box-shadow: 2px 3px 3px #000000cc;
+   box-shadow: 3px 4px 4px #1e1e1ecc;
    border-radius: 3rem;
    display: grid;
    /* justify-content: space-between; */
    align-items: center;
 }
+
 .text {
    display: flex;
    flex-direction: column;
@@ -19,7 +20,6 @@ body {
    align-items: center;
 }
 .submit-form {
-   border: 2px solid #284b6e;
    height: 18rem;
    display: flex;
    flex-direction: column;
@@ -28,14 +28,35 @@ body {
 }
 .text-sm {
    width: 80%;
-   text-align: center;
 }
 .error {
-   color: #284b6e;
+   margin-left: 2rem;
 }
 .password-input {
    width: 90%;
    background-color: #284b6e;
    padding: 0.8rem 1rem;
    border-radius: 15px;
+}
+.bottom-text {
+}
+.bottom-text span {
+   margin: 0 0.4rem;
+   border-bottom: 1px solid #646cff;
+}
+.TandC {
+   display: flex;
+   gap: 0.5rem;
+   position: absolute;
+   bottom: 2rem;
+}
+.TandC input:checked {
+   accent-color: #646cff;
+}
+.mnemonic-display {
+   width: 90%;
+   background-color: #284b6e;
+   padding: 0.8rem 1rem;
+   border-radius: 15px;
+   text-align: left;
 }

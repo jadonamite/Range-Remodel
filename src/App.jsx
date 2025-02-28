@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { WalletProvider } from "./context/WalletContext.jsx";
 import HomePage from "./pages/HomePage/HomePage.jsx";
-import CreateWalletPage from "./pages/CreatPassword.jsx";
+import CreateWalletPage from "./pages/CreatePassword.jsx";
 import ImportWalletPage from "./pages/ImportWalletPage";
 import BackupPage from "./pages/BackupPage.jsx";
 import WalletPage from "./pages/WalletPage";

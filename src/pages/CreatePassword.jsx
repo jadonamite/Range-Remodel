@@ -63,21 +63,26 @@ const CreateWalletPage = () => {
                      </p>
                   )}
                </div>
+
                <button type="submit" className="primary-btn offset-btn">
                   Continue
                </button>
             </form>
          </div>
-         <p className="bottom-text">
-            By continuing, I agree to the
-            <span>
-               <a href="http://">Terms of Service</a>
-            </span>
-            and consent to the
-            <span>
-               <a href="http://">Privacy Policy</a>
-            </span>
-         </p>
+
+         <div className="TandC">
+            <input type="checkbox" name="TandC" id="" />
+            <p className="bottom-text">
+               By continuing, I agree to the
+               <span>
+                  <a href="http://"> Terms of Service </a>
+               </span>
+               and consent to the
+               <span>
+                  <a href="http://"> Privacy Policy </a>
+               </span>
+            </p>
+         </div>
       </div>
    );
 };

@@ -27,7 +27,7 @@ const HomePage = () => {
                         Create Wallet
                      </Link>
 
-                     <Link to="/import" className="secondary-btn">
+                     <Link to="/import" className="tertiary-btn">
                         Import Existing Wallet
                      </Link>
                   </div>
