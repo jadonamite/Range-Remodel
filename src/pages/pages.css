@@ -3,8 +3,8 @@ body {
 }
 
 .o-container {
-   width: 28rem;
-   height: 35rem;
+   width: 25rem;
+   height: 85vh;
    background-color: rgba(30, 30, 30, 0.8);
    box-shadow: 3px 4px 4px #1e1e1ecc;
    border-radius: 3rem;
@@ -38,8 +38,7 @@ body {
    padding: 0.8rem 1rem;
    border-radius: 15px;
 }
-.bottom-text {
-}
+
 .bottom-text span {
    margin: 0 0.4rem;
    border-bottom: 1px solid #9333ea;
@@ -132,6 +131,4 @@ svg {
 }
 .w-full .primary-btn {
    margin-top: 0s;
-   justify-self: flex-start;
-   align-self: flex-start;
 }

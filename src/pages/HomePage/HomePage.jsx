@@ -9,20 +9,22 @@ const HomePage = () => {
       <div className="body full-background">
          <div className="max-w-md w-full mx-4">
             <div className="container rounded-xl">
-               <div className="px-8 py-10 text-center">
+               <div className="px-8 py-10 text-center grid gap-6">
                   <div className="flex justify-center mb-6">
                      <img src={logo} alt="" />
                   </div>
-                  <h1 className="text-2xl font-bold text-white mb-4">
-                     Your Crypto, Your Rules
-                  </h1>
+                  <div>
+                     <h1 className="text-2xl font-bold text-white mb-4">
+                        Your Crypto, Your Rules
+                     </h1>
 
-                  <p className="text-gray-400 mb-8 text-sm">
-                     Create a new Wallet or Import an existing wallet using your
-                     seedphrase
-                  </p>
+                     <p className="text-gray-400 mb-8 text-sm mx-auto">
+                        Create a new Wallet or Import an existing wallet using
+                        your seedphrase
+                     </p>
+                  </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-4 mt-10">
                      <Link to="/create" className="primary-btn">
                         Create Wallet
                      </Link>

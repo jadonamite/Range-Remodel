@@ -1,6 +1,6 @@
 .container {
-   width: 28rem;
-   height: 35rem;
+   width: 25rem;
+   height: 85vh;
    background-color: rgba(30, 30, 30, 0.8);
    box-shadow: 3px 4px 4px #181818cc;
    border-radius: 3rem;
