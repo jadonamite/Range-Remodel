@@ -14,6 +14,7 @@ const CreateWalletPage = () => {
    const [passwordLength, setPasswordLength] = useState(true);
    const [loading, setLoading] = useState(false);
    const [error, setError] = useState(null);
+   const [termsAccepted, setTermsAccepted] = useState(false);
 
    useEffect(() => {
       let timer;
@@ -44,6 +45,10 @@ const CreateWalletPage = () => {
 
       // Go to loading page immediately
       navigate("/creating-wallet");
+   };
+
+   const handleTermsChange = (e) => {
+      setTermsAccepted(e.target.checked);
    };
 
    return (
@@ -94,7 +99,10 @@ const CreateWalletPage = () => {
                <button
                   type="submit"
                   className="primary-btn offset-btn"
-                  disabled={loading}>
+                  style={{
+                     opacity: loading || !termsAccepted ? 0.3 : 1,
+                  }}
+                  disabled={loading || !termsAccepted}>
                   {loading ? (
                      <AiOutlineLoading3Quarters className="loader animate-spin" />
                   ) : (
@@ -105,7 +113,13 @@ const CreateWalletPage = () => {
          </div>
 
          <div className="TandC">
-            <input type="checkbox" name="TandC" id="" />
+            <input
+               type="checkbox"
+               name="TandC"
+               id=""
+               onChange={handleTermsChange}
+               checked={termsAccepted}
+            />
             <p className="bottom-text">
                By continuing, I agree to the
                <span>

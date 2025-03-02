@@ -47,10 +47,10 @@ body {
    display: flex;
    gap: 0.5rem;
    position: absolute;
-   bottom: 2rem;
+   bottom: 1rem;
 }
 .TandC input:checked {
-   accent-color: #9333ea;
+   accent-color: #9233eacb;
 }
 .mnemonic-display {
    width: 90%;
@@ -117,18 +117,17 @@ svg {
 }
 
 .security-text {
-   font-size: 0.75rem; /* text-sm */
-   color: #b91c1c; /* text-red-700 */
+   font-size: 0.75rem;
+   color: #b91c1c;
 }
 
 .security-list {
    display: grid;
-   gap: 0.3rem;
    text-align: left;
 }
 .full-container {
    height: 90vh;
 }
 .w-full .primary-btn {
-   margin-top: 0s;
+   margin-top: 0;
 }

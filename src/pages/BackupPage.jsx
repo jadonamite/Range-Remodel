@@ -131,8 +131,8 @@ const BackupPage = () => {
       <div className="full-background">
          <div className="o-container full-container">
             <div className="text">
-               <h1 className="text-xl font-bold mb-4">Backup Your Wallet</h1>
-               <p className="text-sm mb-6">
+               <h1 className="text-xl font-bold mb-2">Backup Your Wallet</h1>
+               <p className="text-sm mb-4">
                   Your recovery phrase is the <strong>only way</strong> to
                   recover your wallet if you lose access to this device. Write
                   it down and store it somewhere safe and private.
@@ -158,15 +158,15 @@ const BackupPage = () => {
             <div className="security-notice">
                <p className="security-text">
                   <strong>Security Tips:</strong>
-                  <ul className="security-list list-disc mt-2">
+                  <ul className="security-list list-disc mt-1">
                      <li>Never share your recovery phrase with anyone</li>
                      <li>Store it offline, not as a digital copy</li>
-                     <li>Anthropic will never ask for your recovery phrase</li>
+                     <li>Range will never ask for your recovery phrase</li>
                   </ul>
                </p>
             </div>
 
-            <div className="btn-container mt-6">
+            <div className="btn-container mt-1">
                {!hasBackedUp ? (
                   <button
                      onClick={handleConfirmBackup}
@@ -177,7 +177,7 @@ const BackupPage = () => {
                ) : (
                   <button
                      onClick={handleNavigateToWallet}
-                     className="primary-btn ">
+                     className="primary-btn w-full">
                      Continue to Wallet
                   </button>
                )}
