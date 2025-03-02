@@ -68,9 +68,9 @@ const BackupPage = () => {
       setHasBackedUp(true);
    };
 
-   const handleNavigateToWallet = () => {
+   const handleNavigateToVerification = () => {
       if (hasBackedUp) {
-         navigate("/wallet");
+         navigate("/verify");
       } else {
          alert("Please confirm you've backed up your recovery phrase first");
       }
@@ -159,9 +159,9 @@ const BackupPage = () => {
                   </button>
                ) : (
                   <button
-                     onClick={handleNavigateToWallet}
+                     onClick={handleNavigateToVerification}
                      className="primary-btn w-full">
-                     Continue to Wallet
+                     Verify
                   </button>
                )}
             </div>
