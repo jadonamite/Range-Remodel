@@ -5,8 +5,8 @@ import "./pages.css";
 
 // Separate component for mnemonic word display
 const MnemonicWord = ({ index, word }) => (
-   <li className="mb-4 p-2 bg-gray-100 rounded-md border border-gray-200">
-      <span className="font-bold mr-2">{index}.</span>
+   <li className="mb-4 p-2  rounded-md  text-white">
+      <span className=" mr-2">{index}.</span>
       <span>{word}</span>
    </li>
 );
@@ -84,7 +84,7 @@ const BackupPage = () => {
                <p>Your recovery phrase is hidden for security.</p>
                <button
                   onClick={handleToggleReveal}
-                  className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded">
+                  className="mt-4 bg-[#284b6e] hover:bg-yellow-600 text-white py-2 px-4 rounded">
                   Reveal Recovery Phrase
                </button>
             </div>
@@ -112,12 +112,12 @@ const BackupPage = () => {
             <div className="flex justify-between mt-4">
                <button
                   onClick={handleToggleReveal}
-                  className="bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded">
+                  className="bg-[#284b6e] hover:bg-gray-600 text-white py-1 px-3 rounded">
                   Hide Phrase
                </button>
                <button
                   onClick={handleCopyMnemonic}
-                  className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded">
+                  className="bg-[#284b6e]-500 hover:bg-blue-600 text-white py-1 px-3 rounded">
                   Copy to Clipboard
                </button>
             </div>
@@ -127,7 +127,7 @@ const BackupPage = () => {
 
    return (
       <div className="full-background">
-         <div className="o-container full-container">
+         <div className="o-container py-8">
             <div className="text">
                <h1 className="text-xl font-bold mb-2">Backup Your Wallet</h1>
                <p className="text-sm mb-4">
@@ -137,38 +137,29 @@ const BackupPage = () => {
                </p>
             </div>
 
-            <div className="mnemonic-display p-4">
-               {isLoading ? (
-                  <div className="text-center py-8">
-                     <p>Loading your recovery phrase...</p>
-                  </div>
-               ) : mnemonicWords.length > 0 ? (
-                  renderMnemonicGrid()
-               ) : (
-                  <div className="text-center py-8 text-red-600">
-                     <p>
-                        Unable to retrieve your recovery phrase. Please try
-                        again later.
-                     </p>
-                  </div>
-               )}
+            <div className="display">
+               <div className="mnemonic-display p-4">
+                  {isLoading ? (
+                     <div className="text-center py-8">
+                        <p>Loading your recovery phrase...</p>
+                     </div>
+                  ) : mnemonicWords.length > 0 ? (
+                     renderMnemonicGrid()
+                  ) : (
+                     <div className="text-center py-8 text-red-600">
+                        <p>
+                           Unable to retrieve your recovery phrase. Please try
+                           again later.
+                        </p>
+                     </div>
+                  )}
+               </div>
             </div>
-            <div className="security-notice">
-               <p className="security-text">
-                  <strong>Security Tips:</strong>
-                  <ul className="security-list list-disc mt-1">
-                     <li>Never share your recovery phrase with anyone</li>
-                     <li>Store it offline, not as a digital copy</li>
-                     <li>Range will never ask for your recovery phrase</li>
-                  </ul>
-               </p>
-            </div>
-
-            <div className="btn-container mt-1">
+            <div className="btn-container mt-1 w-full">
                {!hasBackedUp ? (
                   <button
                      onClick={handleConfirmBackup}
-                     className="primary-btn w-full"
+                     className="primary-btn btn"
                      disabled={isLoading || mnemonicWords.length === 0}>
                      I've Backed Up My Phrase
                   </button>

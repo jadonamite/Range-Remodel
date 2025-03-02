@@ -4,8 +4,8 @@ body {
 
 .o-container {
    width: 25rem;
-   height: 85vh;
-   background-color: rgba(30, 30, 30, 0.8);
+   min-height: 85vh;
+   background-color: hsla(0, 0%, 12%, 0.8);
    box-shadow: 3px 4px 4px #1e1e1ecc;
    border-radius: 3rem;
    display: grid;
@@ -108,26 +108,6 @@ svg {
 
    padding: 3rem;
 }
-.security-notice {
-   margin: 0.5rem;
-   padding: 0.5rem 2rem;
-   background-color: #fef2f2;
-   border-radius: 0.5rem;
-   border: 1px solid #fca5a5;
-}
 
-.security-text {
-   font-size: 0.75rem;
-   color: #b91c1c;
-}
-
-.security-list {
-   display: grid;
-   text-align: left;
-}
-.full-container {
-   height: 90vh;
-}
 .w-full .primary-btn {
-   margin-top: 0;
 }
