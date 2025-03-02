@@ -80,9 +80,7 @@ const BackupPage = () => {
       if (!isRevealed) {
          return (
             <div className="bg-gray-100 p-6 rounded-lg text-center">
-               <p className="text-red-600 font-bold mb-4">
-                  ⚠️ Security Warning ⚠️
-               </p>
+               <p className="text-red-600 font-bold mb-4">Security Warning</p>
                <p>Your recovery phrase is hidden for security.</p>
                <button
                   onClick={handleToggleReveal}
@@ -103,7 +101,7 @@ const BackupPage = () => {
 
       return (
          <>
-            <div className="grid grid-cols-3 gap-5 mb-4">
+            <div className="grid grid-cols-3 gap-3 mb-2">
                <MnemonicColumn words={columns[0]} startIndex={1} />
                <MnemonicColumn words={columns[1]} startIndex={columnSize + 1} />
                <MnemonicColumn
@@ -139,7 +137,7 @@ const BackupPage = () => {
                </p>
             </div>
 
-            <div className="mnemonic-display p-4 border border-gray-300 rounded-lg">
+            <div className="mnemonic-display p-4">
                {isLoading ? (
                   <div className="text-center py-8">
                      <p>Loading your recovery phrase...</p>
