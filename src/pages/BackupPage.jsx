@@ -79,12 +79,10 @@ const BackupPage = () => {
    const renderMnemonicGrid = () => {
       if (!isRevealed) {
          return (
-            <div className="bg-gray-100 p-6 rounded-lg text-center">
+            <div className=" p-6  text-center">
                <p className="text-red-600 font-bold mb-4">Security Warning</p>
                <p>Your recovery phrase is hidden for security.</p>
-               <button
-                  onClick={handleToggleReveal}
-                  className="mt-4 bg-[#284b6e] hover:bg-yellow-600 text-white py-2 px-4 rounded">
+               <button onClick={handleToggleReveal} className="notRevealed-btn">
                   Reveal Recovery Phrase
                </button>
             </div>
@@ -110,14 +108,10 @@ const BackupPage = () => {
                />
             </div>
             <div className="flex justify-between mt-4">
-               <button
-                  onClick={handleToggleReveal}
-                  className="bg-[#284b6e] hover:bg-gray-600 text-white py-1 px-3 rounded">
+               <button onClick={handleToggleReveal} className="mnemonic-btn">
                   Hide Phrase
                </button>
-               <button
-                  onClick={handleCopyMnemonic}
-                  className="bg-[#284b6e]-500 hover:bg-blue-600 text-white py-1 px-3 rounded">
+               <button onClick={handleCopyMnemonic} className="mnemonic-btn">
                   Copy to Clipboard
                </button>
             </div>

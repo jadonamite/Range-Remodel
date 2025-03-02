@@ -55,8 +55,8 @@ body {
 .mnemonic-display {
    width: 90%;
    min-height: 35vh;
-   background-color: #1d3b5a;
-   color: #1d3b5a;
+   background-color: #181d22;
+   /* background-color: #1a1a1a; */
    padding: 0.8rem 1rem;
    border-radius: 15px;
    text-align: left;
@@ -109,5 +109,45 @@ svg {
    padding: 3rem;
 }
 
-.w-full .primary-btn {
+/* .w-full .primary-btn {
+   color: ;
+} */
+@keyframes pulse {
+   0% {
+      transform: scale(1);
+      opacity: 1;
+   }
+   50% {
+      transform: scale(1.05);
+      opacity: 0.8;
+   }
+   100% {
+      transform: scale(1);
+      opacity: 1;
+   }
+}
+.mnemonic-btn {
+   background-color: #284b6e;
+   color: white;
+   padding: 0.25rem 0.75rem;
+   border-radius: 0.5rem;
+   font-size: 0.9rem;
+   transition: all 300ms ease-in-out;
+}
+.mnemonic-btn:hover {
+   background-color: #122a42;
+   animation: pulse 800ms ease-in-out;
+}
+.notRevealed-btn {
+   background-color: #284b6e;
+   color: white;
+   padding: 0.5rem 1rem;
+   border-radius: 0.5rem;
+
+   transition: all 300ms ease-in-out;
+   margin-top: 3rem;
+}
+.notrevealed-btn:hover {
+   background-color: #122a42;
+   animation: pulse 800ms ease-in-out;
 }
