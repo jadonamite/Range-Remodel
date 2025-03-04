@@ -3,10 +3,63 @@ import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../context/WalletContext";
 import "./pages.css";
 
-// [Previous EyeIcon and SeedPhraseInput components remain the same]
+// Eye icon component for show/hide
+const EyeIcon = ({ onMouseDown, onMouseUp, onMouseLeave }) => (
+   <div
+      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseLeave}>
+      <svg
+         xmlns="http://www.w3.org/2000/svg"
+         width="20"
+         height="20"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         strokeWidth="2"
+         strokeLinecap="round"
+         strokeLinejoin="round">
+         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+         <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+   </div>
+);
+
+// SeedPhraseInput component
+const SeedPhraseInput = ({
+   index,
+   value,
+   onChange,
+   isFocused,
+   onFocus,
+   showText,
+   onShowText,
+   onHideText,
+}) => (
+   <div className="mb-2">
+      <div className="relative">
+         <input
+            type={showText || isFocused ? "text" : "password"}
+            value={value}
+            onChange={(e) => onChange(index, e.target.value)}
+            onFocus={() => onFocus(index)}
+            placeholder={`Word ${index + 1}`}
+            className="p-2 pr-8 rounded-md w-full"
+         />
+         {value && (
+            <EyeIcon
+               onMouseDown={() => onShowText(index)}
+               onMouseUp={() => onHideText(index)}
+               onMouseLeave={() => onHideText(index)}
+            />
+         )}
+      </div>
+   </div>
+);
 
 const ImportWalletPage = () => {
-   const { importWalletFromMnemonic } = useContext(WalletContext);
+   const { importWallet } = useContext(WalletContext);
    const [seedWords, setSeedWords] = useState(Array(12).fill(""));
    const [seedLength, setSeedLength] = useState(12);
    const [isLoading, setIsLoading] = useState(false);
@@ -107,30 +160,17 @@ const ImportWalletPage = () => {
       setIsLoading(true);
       try {
          const phrase = seedWords.join(" ");
+         const success = await importWallet(phrase, "your-password-here");
 
-         // Debugging log
-         console.log("Attempting to import phrase:", phrase);
-
-         // Validate phrase format (optional additional check)
-         const wordCount = phrase.split(" ").length;
-         if (wordCount !== seedLength) {
-            throw new Error(
-               `Invalid phrase length. Expected ${seedLength} words, got ${wordCount}`
+         if (success) {
+            navigate("/create-password");
+         } else {
+            setErrorMessage(
+               "Failed to import wallet. Please check your recovery phrase."
             );
          }
-
-         await importWalletFromMnemonic(phrase);
-         navigate("/create-password");
       } catch (error) {
          console.error("Wallet Import Error:", error);
-
-         // More detailed error logging
-         if (error instanceof Error) {
-            console.error("Error name:", error.name);
-            console.error("Error message:", error.message);
-         }
-
-         // More informative error message
          setErrorMessage(
             `Import failed: ${
                error.message ||
@@ -173,10 +213,6 @@ const ImportWalletPage = () => {
                <h1 className="text-xl font-bold mb-2">Import Wallet</h1>
                <p className="text-sm mb-4">
                   Enter your recovery phrase to import your existing wallet.
-               </p>
-               <p className="text-xs text-gray-400 mb-2 text-center">
-                  Tip: You can paste your entire recovery phrase, and it will be
-                  automatically distributed.
                </p>
             </div>
             <div className="phrase-length-selector mb-4 flex justify-center space-x-4">
