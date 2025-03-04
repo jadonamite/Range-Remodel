@@ -42,7 +42,7 @@ const CreatingWalletPage = () => {
             <div className="loader-box">
                <p className="text-base mb-8">
                   Securing your Wallet , Fetching your recovery phrase...
-               </p>{" "}
+               </p>
                <AiOutlineLoading3Quarters className="loader animate-spin text-4xl" />
                <p className="mt-8 text-base ">This may take a few moments</p>
             </div>
