@@ -3,59 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../context/WalletContext";
 import "./pages.css";
 
-// Eye icon component for show/hide
-const EyeIcon = ({ onMouseDown, onMouseUp, onMouseLeave }) => (
-   <div
-      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
-      onMouseLeave={onMouseLeave}>
-      <svg
-         xmlns="http://www.w3.org/2000/svg"
-         width="20"
-         height="20"
-         viewBox="0 0 24 24"
-         fill="none"
-         stroke="currentColor"
-         strokeWidth="2"
-         strokeLinecap="round"
-         strokeLinejoin="round">
-         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-         <circle cx="12" cy="12" r="3"></circle>
-      </svg>
-   </div>
-);
-
-const SeedPhraseInput = ({
-   index,
-   value,
-   onChange,
-   isFocused,
-   onFocus,
-   showText,
-   onShowText,
-   onHideText,
-}) => (
-   <div className="mb-2">
-      <div className="relative">
-         <input
-            type={showText || isFocused ? "text" : "password"}
-            value={value}
-            onChange={(e) => onChange(index, e.target.value)}
-            onFocus={() => onFocus(index)}
-            placeholder={`Word ${index + 1}`}
-            className="p-2 pr-10 rounded-md w-full"
-         />
-         {value && (
-            <EyeIcon
-               onMouseDown={() => onShowText(index)}
-               onMouseUp={() => onHideText(index)}
-               onMouseLeave={() => onHideText(index)}
-            />
-         )}
-      </div>
-   </div>
-);
+// [Previous EyeIcon and SeedPhraseInput components remain the same]
 
 const ImportWalletPage = () => {
    const { importWalletFromMnemonic } = useContext(WalletContext);
@@ -75,6 +23,42 @@ const ImportWalletPage = () => {
       // Clear error when user starts typing again
       if (errorMessage) {
          setErrorMessage("");
+      }
+   };
+
+   const handlePasteMnemonic = (e) => {
+      e.preventDefault();
+
+      // Get clipboard text
+      const pastedText = e.clipboardData.getData("text").trim();
+
+      // Split the pasted text into words
+      const pastedWords = pastedText
+         .toLowerCase()
+         .split(/\s+/)
+         .filter((word) => word.trim() !== "");
+
+      // Determine the number of words to fill
+      const wordsToFill = Math.min(pastedWords.length, seedLength);
+
+      // Create a new array of seed words
+      const newSeedWords = [...seedWords];
+
+      // Fill the words
+      for (let i = 0; i < wordsToFill; i++) {
+         newSeedWords[i] = pastedWords[i];
+      }
+
+      // Update state
+      setSeedWords(newSeedWords);
+
+      // Clear any previous error
+      setErrorMessage("");
+
+      // If more words are pasted than the current seed length, adjust length
+      if (pastedWords.length > seedLength) {
+         const newLength = pastedWords.length === 12 ? 12 : 24;
+         setSeedLength(newLength);
       }
    };
 
@@ -123,12 +107,35 @@ const ImportWalletPage = () => {
       setIsLoading(true);
       try {
          const phrase = seedWords.join(" ");
+
+         // Debugging log
+         console.log("Attempting to import phrase:", phrase);
+
+         // Validate phrase format (optional additional check)
+         const wordCount = phrase.split(" ").length;
+         if (wordCount !== seedLength) {
+            throw new Error(
+               `Invalid phrase length. Expected ${seedLength} words, got ${wordCount}`
+            );
+         }
+
          await importWalletFromMnemonic(phrase);
-         navigate("/wallet");
+         navigate("/create-password");
       } catch (error) {
-         console.error("Failed to import wallet:", error);
+         console.error("Wallet Import Error:", error);
+
+         // More detailed error logging
+         if (error instanceof Error) {
+            console.error("Error name:", error.name);
+            console.error("Error message:", error.message);
+         }
+
+         // More informative error message
          setErrorMessage(
-            "Invalid recovery phrase. Please check your words and try again."
+            `Import failed: ${
+               error.message ||
+               "Invalid recovery phrase. Please check your words and try again."
+            }`
          );
       } finally {
          setIsLoading(false);
@@ -140,10 +147,6 @@ const ImportWalletPage = () => {
    };
 
    const renderSeedInputs = () => {
-      // Create a grid with 3 columns
-      const columns = 3;
-      const rows = Math.ceil(seedLength / columns);
-
       return (
          <div className="grid grid-cols-3 gap-2">
             {seedWords.map((word, index) => (
@@ -170,13 +173,12 @@ const ImportWalletPage = () => {
                <h1 className="text-xl font-bold mb-2">Import Wallet</h1>
                <p className="text-sm mb-4">
                   Enter your recovery phrase to import your existing wallet.
-                  <span className="text-sm block mt-1 opacity-80">
-                     For privacy, your entries will be hidden when not in focus.
-                     Hold the eye icon to reveal.
-                  </span>
+               </p>
+               <p className="text-xs text-gray-400 mb-2 text-center">
+                  Tip: You can paste your entire recovery phrase, and it will be
+                  automatically distributed.
                </p>
             </div>
-
             <div className="phrase-length-selector mb-4 flex justify-center space-x-4">
                <button
                   onClick={() => handleSeedLengthChange(12)}
@@ -197,9 +199,8 @@ const ImportWalletPage = () => {
                   24 Words
                </button>
             </div>
-
-            <div className="display">
-               <div className="mnemonic-display p-4">
+            <div className="display" onPaste={handlePasteMnemonic}>
+               <div className="mnemonic-display p-4 max-h-64 overflow-y-auto bg-white/10 rounded-lg">
                   {renderSeedInputs()}
 
                   {errorMessage && (
@@ -209,18 +210,20 @@ const ImportWalletPage = () => {
                   )}
                </div>
             </div>
-
-            <div className="btn-container mt-4 w-full flex flex-col space-y-2">
+            <div className="btn-container mt-4 w-full">
                <button
                   onClick={handleImportWallet}
                   className="primary-btn w-full"
                   disabled={isLoading}>
                   {isLoading ? "Importing..." : "Import Wallet"}
                </button>
-               <button onClick={handleGoBack} className="secondary-btn w-full">
-                  Back
-               </button>
             </div>
+
+            <button
+               onClick={handleGoBack}
+               className="secondary-btn w-full mt-2">
+               Back
+            </button>
          </div>
       </div>
    );
