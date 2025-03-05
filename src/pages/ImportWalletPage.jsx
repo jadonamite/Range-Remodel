@@ -146,7 +146,7 @@ const ImportWalletPage = () => {
          const success = await importWallet(phrase, "your-password-here");
 
          if (success) {
-            navigate("/create-password");
+            navigate("/created");
          } else {
             setErrorMessage(
                "Failed to import wallet. Please check your recovery phrase."
