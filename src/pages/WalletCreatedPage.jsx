@@ -23,11 +23,11 @@ const WalletCreated = () => {
                </div>
 
                <div className="space-y-4 mt-10">
-                  <Link to="/create" className="primary-btn">
+                  <Link to="/wallet" className="primary-btn">
                      Continue to Wallet
                   </Link>
 
-                  <Link to="/import" className="tertiary-btn">
+                  <Link to="/recieve" className="tertiary-btn">
                      Check out your Portfolio
                   </Link>
                </div>

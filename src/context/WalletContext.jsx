@@ -10,6 +10,17 @@ export const WalletProvider = ({ children }) => {
    const [balance, setBalance] = useState("0");
    const [transactions, setTransactions] = useState([]);
 
+   // Get Scroll's provider
+   const getProvider = () => {
+      // For Scroll Mainnet
+      // return new ethers.providers.JsonRpcProvider("https://rpc.scroll.io");
+
+      //For Scroll's testnet instead
+      return new ethers.providers.JsonRpcProvider(
+         "https://sepolia-rpc.scroll.io"
+      );
+   };
+
    // Function to create a new wallet
    const createWallet = async (password) => {
       try {
@@ -63,7 +74,8 @@ export const WalletProvider = ({ children }) => {
    // Function to update the wallet balance
    const updateBalance = async (address) => {
       try {
-         const provider = new ethers.providers.getDefaultProvider();
+         // Use Scroll provider instead of default provider
+         const provider = getProvider();
          const balanceWei = await provider.getBalance(address);
          const balanceEth = ethers.utils.formatEther(balanceWei);
          setBalance(balanceEth);
@@ -74,8 +86,8 @@ export const WalletProvider = ({ children }) => {
 
    // Function to get transaction history (placeholder)
    const getTransactions = async (address) => {
-      // Implement fetching transaction history from a blockchain explorer API
-      setTransactions([]); // Placeholder
+      // Placeholder - in a real app you would fetch actual transactions
+      setTransactions([]);
    };
 
    useEffect(() => {

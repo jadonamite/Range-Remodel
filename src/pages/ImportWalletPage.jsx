@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../context/WalletContext";
 import "./pages.css";
 
-// Eye icon component for show/hide
 const EyeIcon = ({ onMouseDown, onMouseUp, onMouseLeave }) => (
    <div
       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
@@ -26,7 +25,6 @@ const EyeIcon = ({ onMouseDown, onMouseUp, onMouseLeave }) => (
    </div>
 );
 
-// SeedPhraseInput component
 const SeedPhraseInput = ({
    index,
    value,
@@ -73,7 +71,6 @@ const ImportWalletPage = () => {
       newWords[index] = value.trim().toLowerCase();
       setSeedWords(newWords);
 
-      // Clear error when user starts typing again
       if (errorMessage) {
          setErrorMessage("");
       }
@@ -81,34 +78,21 @@ const ImportWalletPage = () => {
 
    const handlePasteMnemonic = (e) => {
       e.preventDefault();
-
-      // Get clipboard text
       const pastedText = e.clipboardData.getData("text").trim();
-
-      // Split the pasted text into words
       const pastedWords = pastedText
          .toLowerCase()
          .split(/\s+/)
          .filter((word) => word.trim() !== "");
-
-      // Determine the number of words to fill
       const wordsToFill = Math.min(pastedWords.length, seedLength);
-
-      // Create a new array of seed words
       const newSeedWords = [...seedWords];
 
-      // Fill the words
       for (let i = 0; i < wordsToFill; i++) {
          newSeedWords[i] = pastedWords[i];
       }
 
-      // Update state
       setSeedWords(newSeedWords);
-
-      // Clear any previous error
       setErrorMessage("");
 
-      // If more words are pasted than the current seed length, adjust length
       if (pastedWords.length > seedLength) {
          const newLength = pastedWords.length === 12 ? 12 : 24;
          setSeedLength(newLength);
@@ -140,7 +124,6 @@ const ImportWalletPage = () => {
    };
 
    const validateSeedPhrase = () => {
-      // Check if all words are filled
       const hasEmptyWords = seedWords.some(
          (word) => !word || word.trim() === ""
       );
