@@ -12,7 +12,7 @@ import ImportWalletPage from "./pages/ImportWalletPage";
 import WalletCreated from "./pages/WalletCreatedPage";
 import BackupPage from "./pages/BackupPage.jsx";
 import VerifyBackupPage from "./pages/VerifyPage";
-import WalletPage from "./pages/WalletPage";
+import WalletPage from "./pages/WalletPage/WalletPage.jsx";
 import SendPage from "./pages/SendPage";
 import ReceivePage from "./pages/ReceivePage";
 import Header from "./components/Header";
