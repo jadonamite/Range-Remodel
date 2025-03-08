@@ -1,3 +1,323 @@
-body {
-   color: black;
+/* WalletPage.css */
+
+/* Main container */
+.wallet-container {
+   max-width: 1000px;
+   margin: 10rem auto;
+   padding: 20px;
+   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+   color: #333;
+   background-color: #fff;
+   border-radius: 16px;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Header section */
+.wallet-header {
+   display: flex;
+   align-items: center;
+   margin-bottom: 20px;
+}
+
+.wallet-logo {
+   margin-right: auto;
+}
+
+.logo {
+   height: 40px;
+}
+
+.account-info {
+   margin-left: auto;
+}
+
+.account-card {
+   display: flex;
+   align-items: center;
+   background-color: #fff;
+   border: 1px solid #e0e0e0;
+   border-radius: 24px;
+   padding: 8px 16px;
+}
+
+.account-icon {
+   margin-right: 12px;
+}
+
+.account-details {
+   display: flex;
+   flex-direction: column;
+   margin-right: 12px;
+}
+
+.account-name {
+   font-weight: 600;
+   color: #333;
+}
+
+.account-address {
+   font-size: 14px;
+   color: #666;
+}
+
+.copy-button {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   height: 24px;
+   width: 24px;
+}
+
+/* Balance section */
+.balance-section {
+   margin-bottom: 30px;
+}
+
+.balance-header {
+   display: flex;
+   align-items: center;
+   margin-bottom: 10px;
+}
+
+.balance-title {
+   font-size: 18px;
+   font-weight: 500;
+   color: #666;
+   margin: 0;
+}
+
+.info-button {
+   background: none;
+   border: none;
+   cursor: pointer;
+   margin-left: 8px;
+}
+
+.balance-amount {
+   display: flex;
+   align-items: center;
+   margin-bottom: 5px;
+}
+
+.amount {
+   font-size: 38px;
+   font-weight: 700;
+   margin: 0;
+   color: #111;
+}
+
+.eye-button {
+   background: none;
+   border: none;
+   cursor: pointer;
+   margin-left: 10px;
+}
+
+.balance-change {
+   font-size: 14px;
+   color: #4caf50;
+}
+
+.change-amount {
+   margin-right: 4px;
+}
+
+/* Action buttons */
+.action-buttons {
+   display: flex;
+   justify-content: space-between;
+   margin-bottom: 30px;
+}
+
+.action-button {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   width: 50px;
+   height: 50px;
+   background-color: #f0f0f0;
+   border: none;
+   border-radius: 50%;
+   cursor: pointer;
+}
+
+.action-button.exchange {
+   width: auto;
+   padding: 0 20px;
+   border-radius: 25px;
+   background: linear-gradient(to right, #6a3ff5, #2a9d8f);
+   color: white;
+   display: flex;
+   flex-direction: row;
+   gap: 8px;
+}
+
+.action-button.exchange span {
+   font-weight: 600;
+   font-size: 14px;
+}
+
+.action-button img {
+   width: 24px;
+   height: 24px;
+}
+
+/* Content sections */
+.content-sections {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+}
+
+.section-title {
+   font-size: 18px;
+   font-weight: 600;
+   margin-top: 0;
+   margin-bottom: 16px;
+}
+
+/* Assets section */
+.assets-list {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.asset-item {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 12px 0;
+   border-bottom: 1px solid #f0f0f0;
+}
+
+.asset-left {
+   display: flex;
+   align-items: center;
+}
+
+.asset-icon {
+   width: 36px;
+   height: 36px;
+   border-radius: 50%;
+   background-color: #e9f0ff;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin-right: 12px;
+}
+
+.eth-icon {
+   width: 20px;
+   height: 20px;
+   background-color: #6c7ae0;
+   border-radius: 50%;
+}
+
+.asset-info {
+   display: flex;
+   flex-direction: column;
+}
+
+.asset-name {
+   font-weight: 600;
+   font-size: 16px;
+}
+
+.asset-amount {
+   font-size: 14px;
+   color: #666;
+}
+
+.asset-right {
+   text-align: right;
+}
+
+.asset-value {
+   font-weight: 600;
+   font-size: 16px;
+}
+
+.asset-change {
+   font-size: 12px;
+   color: #4caf50;
+}
+
+.no-assets {
+   text-align: center;
+   padding: 20px;
+   color: #666;
+}
+
+/* Activity section */
+.transactions-list {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.transaction-item {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 12px 0;
+   border-bottom: 1px solid #f0f0f0;
+}
+
+.transaction-left {
+   display: flex;
+   align-items: center;
+}
+
+.transaction-icon {
+   width: 36px;
+   height: 36px;
+   border-radius: 50%;
+   background-color: #e9f0ff;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin-right: 12px;
+}
+
+.transaction-info {
+   display: flex;
+   flex-direction: column;
+}
+
+.transaction-type {
+   font-weight: 600;
+   font-size: 16px;
+}
+
+.transaction-address {
+   font-size: 14px;
+   color: #666;
+}
+
+.transaction-amount {
+   font-weight: 600;
+   font-size: 16px;
+}
+
+.no-transactions {
+   text-align: center;
+   padding: 20px;
+   color: #666;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+   .content-sections {
+      flex-direction: row;
+      gap: 40px;
+   }
+
+   .assets-section,
+   .activity-section {
+      flex: 1;
+   }
 }

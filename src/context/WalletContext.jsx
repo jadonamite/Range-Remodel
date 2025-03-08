@@ -9,6 +9,7 @@ export const WalletProvider = ({ children }) => {
    const [address, setAddress] = useState("");
    const [balance, setBalance] = useState("0");
    const [transactions, setTransactions] = useState([]);
+   const [assets, setAssets] = useState([]);
 
    // Get Scroll's provider
    const getProvider = () => {
@@ -65,9 +66,12 @@ export const WalletProvider = ({ children }) => {
             setWallet(decryptedWallet);
             setAddress(decryptedWallet.address);
             await updateBalance(decryptedWallet.address);
+            return true;
          }
+         return false;
       } catch (error) {
          console.error("Error loading wallet:", error);
+         return false;
       }
    };
 
@@ -79,15 +83,82 @@ export const WalletProvider = ({ children }) => {
          const balanceWei = await provider.getBalance(address);
          const balanceEth = ethers.utils.formatEther(balanceWei);
          setBalance(balanceEth);
+         return balanceEth;
       } catch (error) {
          console.error("Error updating balance:", error);
+         return "0";
       }
    };
 
-   // Function to get transaction history (placeholder)
+   // Function to get transaction history
    const getTransactions = async (address) => {
-      // Placeholder - in a real app you would fetch actual transactions
-      setTransactions([]);
+      try {
+         // In a real app, fetch this from an API or blockchain explorer
+         // For demonstration, we'll check if the address has a balance
+         // and create a sample transaction if it does
+         const provider = getProvider();
+         const balanceWei = await provider.getBalance(address);
+
+         if (balanceWei.gt(0)) {
+            // If they have a balance, show a sample "receive" transaction
+            setTransactions([
+               {
+                  type: "Receive",
+                  address: `0x${Math.random()
+                     .toString(16)
+                     .slice(2, 10)}...${Math.random()
+                     .toString(16)
+                     .slice(2, 8)}`,
+                  amount: `${ethers.utils.formatEther(balanceWei)} ETH`,
+                  icon: "ethereum",
+                  timestamp: Date.now(),
+               },
+            ]);
+         } else {
+            // No transactions yet
+            setTransactions([]);
+         }
+      } catch (error) {
+         console.error("Error getting transactions:", error);
+         setTransactions([]);
+      }
+   };
+
+   // Function to simulate sending tokens (for demo purposes)
+   const sendTransaction = async (toAddress, amount) => {
+      try {
+         if (!wallet) throw new Error("No wallet loaded");
+
+         const provider = getProvider();
+         const walletWithProvider = wallet.connect(provider);
+
+         // Convert amount to wei
+         const amountWei = ethers.utils.parseEther(amount);
+
+         // Check if we have enough balance
+         const currentBalance = await provider.getBalance(address);
+         if (currentBalance.lt(amountWei)) {
+            throw new Error("Insufficient balance");
+         }
+
+         // Create transaction
+         const tx = await walletWithProvider.sendTransaction({
+            to: toAddress,
+            value: amountWei,
+         });
+
+         // Wait for transaction to be mined
+         await tx.wait();
+
+         // Update balance and transactions
+         await updateBalance(address);
+         await getTransactions(address);
+
+         return true;
+      } catch (error) {
+         console.error("Error sending transaction:", error);
+         return false;
+      }
    };
 
    useEffect(() => {
@@ -102,11 +173,13 @@ export const WalletProvider = ({ children }) => {
       address,
       balance,
       transactions,
+      assets,
       createWallet,
       importWallet,
       loadWallet,
       updateBalance,
       getTransactions,
+      sendTransaction,
    };
 
    return (
