@@ -7,7 +7,7 @@ import logo from "../../assets/logo.png";
 const HomePage = () => {
    return (
       <div className="body full-background">
-         <div className="container rounded-xl">
+         <div className="o-container rounded-xl">
             <div className="px-8 py-10 text-center grid gap-6">
                <div className="flex justify-center mb-6">
                   <img src={logo} alt="" />

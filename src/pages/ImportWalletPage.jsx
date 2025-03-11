@@ -203,7 +203,7 @@ const ImportWalletPage = () => {
                   onClick={() => handleSeedLengthChange(12)}
                   className={`px-4 py-2 rounded-md ${
                      seedLength === 12
-                        ? "bg-blue-600 text-white"
+                        ? "bg-[#6a3ff5] text-white"
                         : "bg-gray-700 text-gray-300"
                   }`}>
                   12 Words
@@ -212,7 +212,7 @@ const ImportWalletPage = () => {
                   onClick={() => handleSeedLengthChange(24)}
                   className={`px-4 py-2 rounded-md ${
                      seedLength === 24
-                        ? "bg-blue-600 text-white"
+                        ? "bg-[#6a3ff5] text-white"
                         : "bg-gray-700 text-gray-300"
                   }`}>
                   24 Words
@@ -232,7 +232,7 @@ const ImportWalletPage = () => {
             <div className="btn-container mt-4 w-full">
                <button
                   onClick={handleImportWallet}
-                  className="primary-btn w-full"
+                  className="primary-btn"
                   disabled={isLoading}>
                   {isLoading ? "Importing..." : "Import Wallet"}
                </button>

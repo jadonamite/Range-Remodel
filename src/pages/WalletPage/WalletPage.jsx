@@ -16,6 +16,9 @@ import {
    ArrowDown,
    DollarSign,
    RefreshCw,
+   X,
+   CheckCircle,
+   AlertCircle,
 } from "lucide-react";
 import "./WalletPage.css";
 
@@ -102,7 +105,233 @@ const LoadingModal = memo(() => (
       </div>
    </div>
 ));
+// New Modal Components
+const Modal = ({ isOpen, onClose, title, children }) => {
+   if (!isOpen) return null;
 
+   return (
+      <div className="modal-overlay" onClick={onClose}>
+         <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+               <h2>{title}</h2>
+               <button
+                  className="close-button"
+                  onClick={onClose}
+                  aria-label="Close modal">
+                  <X size={20} />
+               </button>
+            </div>
+            <div className="modal-content">{children}</div>
+         </div>
+      </div>
+   );
+};
+
+const SendModal = ({ isOpen, onClose, assets }) => {
+   const [recipient, setRecipient] = useState("");
+   const [amount, setAmount] = useState("");
+   const [selectedAsset, setSelectedAsset] = useState(
+      assets[0]?.symbol || "ETH"
+   );
+   const [status, setStatus] = useState(null); // null, 'pending', 'success', 'error'
+
+   const resetForm = () => {
+      setRecipient("");
+      setAmount("");
+      setStatus(null);
+   };
+
+   const handleClose = () => {
+      resetForm();
+      onClose();
+   };
+
+   const handleSend = async (e) => {
+      e.preventDefault();
+
+      if (!recipient || !amount) return;
+
+      try {
+         setStatus("pending");
+
+         // In a real application, you would call your web3 provider here
+         // const tx = await web3.eth.sendTransaction({
+         //   from: address,
+         //   to: recipient,
+         //   value: web3.utils.toWei(amount, 'ether')
+         // });
+
+         // Simulate transaction delay
+         await new Promise((resolve) => setTimeout(resolve, 1500));
+
+         setStatus("success");
+
+         // After success timeout, close the modal
+         setTimeout(() => {
+            handleClose();
+         }, 2000);
+      } catch (error) {
+         console.error("Transaction failed:", error);
+         setStatus("error");
+      }
+   };
+
+   return (
+      <Modal
+         isOpen={isOpen}
+         onClose={status ? null : handleClose}
+         title="Send Assets">
+         {status === "pending" && (
+            <div className="transaction-status pending">
+               <div className="loading-spinner"></div>
+               <p>Processing transaction...</p>
+            </div>
+         )}
+
+         {status === "success" && (
+            <div className="transaction-status success">
+               <CheckCircle size={48} />
+               <p>Transaction sent successfully!</p>
+            </div>
+         )}
+
+         {status === "error" && (
+            <div className="transaction-status error">
+               <AlertCircle size={48} />
+               <p>Transaction failed. Please try again.</p>
+               <button
+                  className="primary-button"
+                  onClick={() => setStatus(null)}>
+                  Try Again
+               </button>
+            </div>
+         )}
+
+         {!status && (
+            <form onSubmit={handleSend} className="send-form">
+               <div className="form-group">
+                  <label htmlFor="asset">Asset</label>
+                  <select
+                     id="asset"
+                     value={selectedAsset}
+                     onChange={(e) => setSelectedAsset(e.target.value)}>
+                     {assets.map((asset) => (
+                        <option key={asset.symbol} value={asset.symbol}>
+                           {asset.name} ({asset.symbol})
+                        </option>
+                     ))}
+                  </select>
+               </div>
+
+               <div className="form-group">
+                  <label htmlFor="recipient">Recipient Address</label>
+                  <input
+                     id="recipient"
+                     type="text"
+                     placeholder="0x..."
+                     value={recipient}
+                     onChange={(e) => setRecipient(e.target.value)}
+                     required
+                  />
+               </div>
+
+               <div className="form-group">
+                  <label htmlFor="amount">Amount</label>
+                  <input
+                     id="amount"
+                     type="number"
+                     step="0.000001"
+                     min="0"
+                     placeholder="0.00"
+                     value={amount}
+                     onChange={(e) => setAmount(e.target.value)}
+                     required
+                  />
+                  <span className="input-suffix">{selectedAsset}</span>
+               </div>
+
+               <div className="form-footer">
+                  <button
+                     type="button"
+                     className="secondary-button"
+                     onClick={handleClose}>
+                     Cancel
+                  </button>
+                  <button type="submit" className="primary-button">
+                     Send
+                  </button>
+               </div>
+            </form>
+         )}
+      </Modal>
+   );
+};
+
+const ReceiveModal = ({ isOpen, onClose, address }) => {
+   const copyAddressToClipboard = useCallback(() => {
+      if (address) {
+         navigator.clipboard
+            .writeText(address)
+            .then(() => {
+               // Show a toast notification (would be implemented in a real app)
+               console.log("Address copied to clipboard");
+            })
+            .catch((err) => {
+               console.error("Could not copy address:", err);
+            });
+      }
+   }, [address]);
+
+   return (
+      <Modal isOpen={isOpen} onClose={onClose} title="Receive Assets">
+         <div className="receive-container">
+            <div className="qr-code">
+               {/* In a real app, you would generate a QR code here */}
+               <div className="qr-placeholder">
+                  {/* This would be replaced with an actual QR code library */}
+                  <svg
+                     width="180"
+                     height="180"
+                     viewBox="0 0 180 180"
+                     fill="none"
+                     xmlns="http://www.w3.org/2000/svg">
+                     <rect width="180" height="180" fill="#F5F7FF" />
+                     <path d="M40 40H70V70H40V40Z" fill="#1F2937" />
+                     <path d="M80 40H90V50H80V40Z" fill="#1F2937" />
+                     <path d="M100 40H130V70H100V40Z" fill="#1F2937" />
+                     <path d="M40 80H50V90H40V80Z" fill="#1F2937" />
+                     <path d="M60 80H70V90H60V80Z" fill="#1F2937" />
+                     <path d="M90 80H100V90H90V80Z" fill="#1F2937" />
+                     <path d="M110 80H120V90H110V80Z" fill="#1F2937" />
+                     <path d="M40 100H70V130H40V100Z" fill="#1F2937" />
+                     <path d="M80 110H90V120H80V110Z" fill="#1F2937" />
+                     <path d="M100 100H130V130H100V100Z" fill="#1F2937" />
+                  </svg>
+               </div>
+            </div>
+
+            <div className="address-container">
+               <p className="address-label">Your Wallet Address</p>
+               <div className="address-value">{address}</div>
+               <button
+                  className="copy-address-button"
+                  onClick={copyAddressToClipboard}
+                  aria-label="Copy address to clipboard">
+                  <Copy size={18} />
+                  <span>Copy Address</span>
+               </button>
+            </div>
+
+            <div className="receive-warning">
+               <p>
+                  Only send Ethereum and ERC-20 tokens to this address. Sending
+                  other types of tokens may result in permanent loss.
+               </p>
+            </div>
+         </div>
+      </Modal>
+   );
+};
 const WalletPage = () => {
    const {
       address,
@@ -119,6 +348,8 @@ const WalletPage = () => {
    const [previousBalance, setPreviousBalance] = useState(0);
    const [isLoading, setIsLoading] = useState(true);
    const [hideBalance, setHideBalance] = useState(false);
+   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
+   const [isReceiveModalOpen, setIsReceiveModalOpen] = useState(false);
 
    // Function to format the address for display
    const formatAddress = useCallback((addr) => {
@@ -263,6 +494,20 @@ const WalletPage = () => {
       <div className="wallet-container">
          {isLoading && <LoadingModal />}
 
+         {/* Send Modal */}
+         <SendModal
+            isOpen={isSendModalOpen}
+            onClose={() => setIsSendModalOpen(false)}
+            assets={assets}
+         />
+
+         {/* Receive Modal */}
+         <ReceiveModal
+            isOpen={isReceiveModalOpen}
+            onClose={() => setIsReceiveModalOpen(false)}
+            address={address}
+         />
+
          <div className="wallet-header">
             <div className="wallet-logo">
                <svg
@@ -357,6 +602,7 @@ const WalletPage = () => {
          <div className="action-buttons">
             <button
                className="action-button send"
+               onClick={() => setIsSendModalOpen(true)}
                aria-label="Send cryptocurrency">
                <ArrowUp size={22} />
                <span>Send</span>
@@ -364,11 +610,11 @@ const WalletPage = () => {
 
             <button
                className="action-button receive"
+               onClick={() => setIsReceiveModalOpen(true)}
                aria-label="Receive cryptocurrency">
                <ArrowDown size={22} />
                <span>Receive</span>
             </button>
-
             <button
                className="action-button buy"
                aria-label="Buy cryptocurrency">
@@ -380,7 +626,7 @@ const WalletPage = () => {
                className="action-button exchange"
                aria-label="Exchange cryptocurrency">
                <RefreshCw size={18} />
-               <span>EXCHANGE</span>
+               <span>Exchange</span>
             </button>
          </div>
 

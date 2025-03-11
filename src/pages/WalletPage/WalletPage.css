@@ -262,10 +262,12 @@ body {
    box-shadow: var(--shadow-sm);
    transition: transform var(--transition-speed),
       box-shadow var(--transition-speed);
+   width: 80%;
+   margin: 0 auto;
 }
 
 .action-button:hover {
-   transform: translateY(-2px);
+   transform: translateY(-5px);
    box-shadow: var(--shadow-md);
 }
 
@@ -281,12 +283,14 @@ body {
       var(--primary-color),
       var(--secondary-color)
    );
+
    color: white;
    display: flex;
    flex-direction: row;
    align-items: center;
    gap: 0.5rem;
    padding: 0.75rem 1.25rem;
+   flex: 2;
 }
 
 .action-button.exchange span {
@@ -468,7 +472,208 @@ body {
    font-size: 1rem;
    color: var(--text-primary);
 }
+/* Modal Styles - Add to WalletPage.css */
+.modal-overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background-color: rgba(0, 0, 0, 0.5);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 1000;
+   backdrop-filter: blur(4px);
+}
 
+.modal-container {
+   background-color: white;
+   border-radius: 12px;
+   width: 90%;
+   max-width: 480px;
+   max-height: 90vh;
+   overflow-y: auto;
+   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 16px 20px;
+   border-bottom: 1px solid #eaedf3;
+}
+
+.modal-header h2 {
+   font-size: 18px;
+   font-weight: 600;
+   margin: 0;
+}
+
+.close-button {
+   background: none;
+   border: none;
+   cursor: pointer;
+   color: #64748b;
+}
+
+.modal-content {
+   padding: 20px;
+}
+
+/* Send Form Styles */
+.send-form {
+   display: flex;
+   flex-direction: column;
+   gap: 16px;
+}
+
+.form-group {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   position: relative;
+}
+
+.form-group label {
+   font-size: 14px;
+   font-weight: 500;
+   color: #64748b;
+}
+
+.form-group input,
+.form-group select {
+   padding: 12px 16px;
+   border: 1px solid #e2e8f0;
+   border-radius: 8px;
+   font-size: 16px;
+}
+
+.form-group .input-suffix {
+   position: absolute;
+   right: 16px;
+   bottom: 12px;
+   font-size: 16px;
+   color: #64748b;
+}
+
+.form-footer {
+   display: flex;
+   justify-content: flex-end;
+   gap: 12px;
+   margin-top: 8px;
+}
+
+.primary-button {
+   background-color: #627eea;
+   color: white;
+   border: none;
+   border-radius: 8px;
+   padding: 12px 20px;
+   font-weight: 600;
+   cursor: pointer;
+}
+
+.secondary-button {
+   background-color: #f1f5f9;
+   color: #334155;
+   border: none;
+   border-radius: 8px;
+   padding: 12px 20px;
+   font-weight: 600;
+   cursor: pointer;
+}
+
+/* Receive Styles */
+.receive-container {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 20px;
+}
+
+.qr-code {
+   background-color: white;
+   padding: 16px;
+   border-radius: 12px;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.address-container {
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   align-items: center;
+}
+
+.address-label {
+   font-size: 14px;
+   color: #64748b;
+   margin: 0;
+}
+
+.address-value {
+   background-color: #f1f5f9;
+   padding: 12px;
+   border-radius: 8px;
+   font-size: 14px;
+   font-family: monospace;
+   word-break: break-all;
+   width: 100%;
+   text-align: center;
+}
+
+.copy-address-button {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   background-color: transparent;
+   border: 1px solid #e2e8f0;
+   border-radius: 8px;
+   padding: 8px 16px;
+   cursor: pointer;
+   margin-top: 8px;
+}
+
+.receive-warning {
+   background-color: #fff7ed;
+   border: 1px solid #ffedd5;
+   border-radius: 8px;
+   padding: 12px;
+   font-size: 14px;
+   color: #9a3412;
+   margin-top: 8px;
+}
+
+/* Transaction Status */
+.transaction-status {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   padding: 24px;
+   gap: 16px;
+   text-align: center;
+}
+
+.transaction-status.pending {
+   color: #0284c7;
+}
+
+.transaction-status.success {
+   color: #16a34a;
+}
+
+.transaction-status.error {
+   color: #dc2626;
+}
+
+.transaction-status p {
+   font-size: 16px;
+   font-weight: 500;
+}
 /* Responsive adjustments */
 @media (min-width: 768px) {
    .wallet-container {
