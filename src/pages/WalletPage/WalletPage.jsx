@@ -507,7 +507,6 @@ const WalletPage = () => {
             onClose={() => setIsReceiveModalOpen(false)}
             address={address}
          />
-
          <div className="wallet-header">
             <div className="wallet-logo">
                <svg
@@ -626,10 +625,15 @@ const WalletPage = () => {
                className="action-button exchange"
                aria-label="Exchange cryptocurrency">
                <RefreshCw size={18} />
-               <span>Exchange</span>
+               <span>EXCHANGE</span>
             </button>
          </div>
-
+         <div className="action-buttons border ">
+            <button className="action-button send">Send</button>
+            <button className="action-button send">Send</button>
+            <button className="action-button send">Send</button>
+            <button className="action-button send">Send</button>
+         </div>
          <div className="content-sections">
             <div className="assets-section">
                <h3 className="section-title">Assets</h3>

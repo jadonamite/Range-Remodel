@@ -12,8 +12,8 @@
    --border-radius-md: 16px;
    --border-radius-lg: 24px;
    --border-radius-xl: 50%;
-   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+   --shadow-sm: 0 4px 8px rgba(0, 0, 0, 0.1);
+   --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.1);
    --positive-color: #4caf50;
    --negative-color: #f44336;
    --transition-speed: 0.3s;
@@ -243,7 +243,6 @@ body {
 /* Action buttons */
 .action-buttons {
    display: flex;
-   justify-content: space-between;
    margin-bottom: 1.875rem;
    gap: 0.5rem;
 }
@@ -288,12 +287,12 @@ body {
    display: flex;
    flex-direction: row;
    align-items: center;
-   gap: 0.5rem;
+   gap: 0.7rem;
    padding: 0.75rem 1.25rem;
    flex: 2;
 }
 
-.action-button.exchange span {
+.action-button span {
    font-weight: 600;
    font-size: 0.875rem;
    margin-top: 0;
@@ -694,10 +693,6 @@ body {
    .action-buttons {
       justify-content: flex-start;
       gap: 1rem;
-   }
-
-   .action-button {
-      max-width: 120px;
    }
 }
 
