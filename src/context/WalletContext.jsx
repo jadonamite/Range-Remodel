@@ -98,6 +98,11 @@ export const WalletProvider = ({ children }) => {
    const getProvider = () => {
       return new ethers.providers.JsonRpcProvider(network.rpcUrl);
    };
+   const relayClient = createClient({
+      baseApiUrl: TESTNET_RELAY_API, // Scroll api endpoint
+      source: "RangeWallet_v1", //Unique source identifier
+      chains: [convertViemChainToRelayChain(scrollSepolia)],
+   });
 
    // Check network connection and latency
    const checkNetworkStatus = async () => {
@@ -568,6 +573,41 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
+   // Function to get swap quotes
+   const getSwapQuotes = async (fromTokenAddress, toTokenAddress, amount) => {
+      try {
+         // Convert amount to BigInt (viem uses BigInt)
+         const amountBigInt = ethers.utils.parseUnits(amount, 18).toBigInt(); // Assuming 18 decimals, adjust if needed
+
+         const quotes = await relayClient.swap.getQuotes({
+            fromTokenAddress,
+            toTokenAddress,
+            amount: amountBigInt,
+            userAddress: address, // Your wallet address
+         });
+
+         return quotes;
+      } catch (error) {
+         console.error("Error getting swap quotes:", error);
+         throw error;
+      }
+   };
+
+   // Function to execute a swap
+   const executeSwap = async (quote) => {
+      try {
+         const swapResult = await relayClient.swap.executeSwap({
+            quote: quote,
+            userAddress: address, // Your wallet address
+         });
+
+         return swapResult;
+      } catch (error) {
+         console.error("Error executing swap:", error);
+         throw error;
+      }
+   };
+
    // Function to disconnect wallet
    const disconnectWallet = () => {
       setWallet(null);
@@ -631,6 +671,7 @@ export const WalletProvider = ({ children }) => {
       network,
       networkStatus,
       isConnected,
+      relayClient,
       createWallet,
       importWallet,
       loadWallet,
@@ -642,6 +683,8 @@ export const WalletProvider = ({ children }) => {
       switchNetwork,
       checkNetworkStatus,
       fetchTokenBalances,
+      getSwapQuotes,
+      executeSwap,
       SCROLL_TOKENS,
    };
 
