@@ -1,5 +1,11 @@
 import React, { createContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
+import {
+   createClient,
+   convertViemChainToRelayChain,
+   TESTNET_RELAY_API,
+} from "@reservoir0x/relay-sdk";
+import { defineChain } from "viem";
 
 export const WalletContext = createContext();
 
@@ -28,7 +34,27 @@ const SCROLL_NETWORKS = {
       },
    },
 };
-
+const scrollSepolia = defineChain({
+   id: 534351, // Scroll Sepolia chain ID
+   name: "Scroll Sepolia",
+   network: "scroll-sepolia",
+   nativeCurrency: {
+      decimals: 18,
+      name: "ETH",
+      symbol: "ETH",
+   },
+   rpcUrls: {
+      default: {
+         http: ["https://sepolia-rpc.scroll.io"],
+      },
+   },
+   blockExplorers: {
+      default: {
+         name: "Scrollscan",
+         url: "https://sepolia.scrollscan.com",
+      },
+   },
+});
 // Common token addresses on Scroll Sepolia
 const SCROLL_TOKENS = {
    USDC: {

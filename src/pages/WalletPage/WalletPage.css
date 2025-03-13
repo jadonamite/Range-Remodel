@@ -156,6 +156,8 @@
    display: flex;
    align-items: center;
    margin-bottom: 24px;
+   padding: 1rem;
+   border-radius: 10px;
    box-shadow: var(--shadow-sm);
 }
 
@@ -961,7 +963,7 @@
 }
 
 /* Dark mode support */
-/* @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
    :root {
       --scroll-background: #121212;
       --text-primary: #ffffff;
@@ -1001,4 +1003,4 @@
    .max-button {
       background-color: rgba(255, 255, 255, 0.05);
    }
-} */
+}
