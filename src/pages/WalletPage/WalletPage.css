@@ -1,5 +1,7 @@
 /* WalletPage.css */
 :root {
+   --primary-color: #6a3ff5;
+   --secondary-color: #2a9d8f;
    --scroll-primary: #ffac3a;
    --scroll-secondary: #ffd700;
    --scroll-accent: #fffacd;
@@ -10,7 +12,9 @@
    --card-bg: #ffffff;
    --error-color: #d32f2f;
    --success-color: #388e3c;
-   background-color: var(--scroll-background);
+   --shadow-sm: 0 4px 8px rgba(0, 0, 0, 0.1);
+   --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.1);
+   background-color: #fff;
 }
 
 /* Main container */
@@ -22,6 +26,7 @@
       Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
    color: var(--text-primary);
    background-color: var(--scroll-background);
+   box-shadow: var(--shadow-md);
    height: 100%;
    overflow-y: auto;
 }
@@ -151,6 +156,7 @@
    display: flex;
    align-items: center;
    margin-bottom: 24px;
+   box-shadow: var(--shadow-sm);
 }
 
 .wallet-logo {
@@ -319,7 +325,7 @@
    border-radius: 12px;
    border: none;
    background-color: var(--card-bg);
-   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+   box-shadow: var(--shadow-sm);
    cursor: pointer;
    transition: transform 0.2s, box-shadow 0.2s;
    gap: 8px;
@@ -328,7 +334,7 @@
 }
 
 .action-button:hover {
-   transform: translateY(-2px);
+   transform: translateY(-4px);
    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -345,7 +351,19 @@
 }
 
 .action-button.exchange {
-   color: var(--scroll-primary);
+   background: linear-gradient(
+      to right,
+      var(--primary-color),
+      var(--secondary-color)
+   );
+
+   color: white;
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   gap: 0.7rem;
+   padding: 0.75rem 1.25rem;
+   flex: 2;
 }
 
 /* Wallet content */

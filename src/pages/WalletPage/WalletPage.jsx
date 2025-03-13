@@ -874,21 +874,21 @@ const WalletPage = () => {
                onClick={() => setIsSendModalOpen(true)}
                aria-label="Send cryptocurrency">
                <ArrowUp size={20} />
-               Send
+               SEND
             </button>
             <button
                className="action-button receive"
                onClick={() => setIsReceiveModalOpen(true)}
                aria-label="Receive cryptocurrency">
                <ArrowDown size={20} />
-               Receive
+               RECIEVE
             </button>
 
             <button
                className="action-button buy"
                aria-label="Buy cryptocurrency">
                <DollarSign size={20} />
-               Buy
+               BUY
             </button>
             <button
                className="action-button exchange"
