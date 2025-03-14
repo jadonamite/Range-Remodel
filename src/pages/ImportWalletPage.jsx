@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../context/WalletContext";
 import "./pages.css";
@@ -64,7 +64,13 @@ const ImportWalletPage = () => {
    const [errorMessage, setErrorMessage] = useState("");
    const [focusedInput, setFocusedInput] = useState(null);
    const [visibleInputs, setVisibleInputs] = useState({});
+   const [password, setPassword] = useState("");
+   const [confirmPassword, setConfirmPassword] = useState("");
+   const [passwordMatch, setPasswordMatch] = useState(true);
    const navigate = useNavigate();
+   const [step, setStep] = useState(1); // 1: Seed Phrase, 2: Password
+   const [passwordVisible, setPasswordVisible] = useState(false);
+   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
    const handleWordChange = (index, value) => {
       const newWords = [...seedWords];
@@ -75,7 +81,13 @@ const ImportWalletPage = () => {
          setErrorMessage("");
       }
    };
+   const togglePasswordVisibility = () => {
+      setPasswordVisible(!passwordVisible);
+   };
 
+   const toggleConfirmPasswordVisibility = () => {
+      setConfirmPasswordVisible(!confirmPasswordVisible);
+   };
    const handlePasteMnemonic = (e) => {
       e.preventDefault();
       const pastedText = e.clipboardData.getData("text").trim();
@@ -135,15 +147,22 @@ const ImportWalletPage = () => {
       return true;
    };
 
+   const handleNext = () => {
+      if (step === 1 && validateSeedPhrase()) {
+         setStep(2);
+      }
+   };
+
    const handleImportWallet = async () => {
-      if (!validateSeedPhrase()) {
+      if (password !== confirmPassword) {
+         setPasswordMatch(false);
          return;
       }
 
       setIsLoading(true);
       try {
          const phrase = seedWords.join(" ");
-         const success = await importWallet(phrase, "your-password-here");
+         const success = await importWallet(phrase, password);
 
          if (success) {
             navigate("/created");
@@ -166,7 +185,11 @@ const ImportWalletPage = () => {
    };
 
    const handleGoBack = () => {
-      navigate("/");
+      if (step === 2) {
+         setStep(1);
+      } else {
+         navigate("/");
+      }
    };
 
    const renderSeedInputs = () => {
@@ -195,48 +218,87 @@ const ImportWalletPage = () => {
             <div className="text">
                <h1 className="text-xl font-bold mb-2">Import Wallet</h1>
                <p className="text-sm mb-4">
-                  Enter your recovery phrase to import your existing wallet.
+                  {step === 1
+                     ? "Enter your recovery phrase to import your existing wallet."
+                     : "Set up a password for your imported wallet."}
                </p>
             </div>
-            <div className="phrase-length-selector mb-4 flex justify-center space-x-4">
-               <button
-                  onClick={() => handleSeedLengthChange(12)}
-                  className={`px-4 py-2 rounded-md ${
-                     seedLength === 12
-                        ? "bg-[#6a3ff5] text-white"
-                        : "bg-gray-700 text-gray-300"
-                  }`}>
-                  12 Words
-               </button>
-               <button
-                  onClick={() => handleSeedLengthChange(24)}
-                  className={`px-4 py-2 rounded-md ${
-                     seedLength === 24
-                        ? "bg-[#6a3ff5] text-white"
-                        : "bg-gray-700 text-gray-300"
-                  }`}>
-                  24 Words
-               </button>
-            </div>
-            <div className="display" onPaste={handlePasteMnemonic}>
-               <div className="mnemonic-display p-4 max-h-64 overflow-y-auto bg-white/10 rounded-lg">
-                  {renderSeedInputs()}
 
-                  {errorMessage && (
-                     <div className="mt-4 text-red-500 text-center">
-                        {errorMessage}
+            {step === 1 && (
+               <>
+                  <div className="phrase-length-selector mb-4 flex justify-center space-x-4">
+                     <button
+                        onClick={() => handleSeedLengthChange(12)}
+                        className={`px-4 py-2 rounded-md ${
+                           seedLength === 12
+                              ? "bg-[#6a3ff5] text-white"
+                              : "bg-gray-700 text-gray-300"
+                        }`}>
+                        12 Words
+                     </button>
+                     <button
+                        onClick={() => handleSeedLengthChange(24)}
+                        className={`px-4 py-2 rounded-md ${
+                           seedLength === 24
+                              ? "bg-[#6a3ff5] text-white"
+                              : "bg-gray-700 text-gray-300"
+                        }`}>
+                        24 Words
+                     </button>
+                  </div>
+                  <div className="display" onPaste={handlePasteMnemonic}>
+                     <div className="mnemonic-display p-4 max-h-64 overflow-y-auto bg-white/10 rounded-lg">
+                        {renderSeedInputs()}
+
+                        {errorMessage && (
+                           <div className="mt-4 text-red-500 text-center">
+                              {errorMessage}
+                           </div>
+                        )}
                      </div>
-                  )}
+                  </div>
+                  <div className="btn-container mt-4 w-full">
+                     <button
+                        onClick={handleNext}
+                        className="primary-btn"
+                        disabled={isLoading}>
+                        Next
+                     </button>
+                  </div>
+               </>
+            )}
+            {step === 2 && (
+               <div className="space-y-4 w-full">
+                  <div className="relative password-input mx-auto">
+                     <input
+                        type={passwordVisible ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="focus:outline-none"
+                        placeholder="Enter your password"
+                        disabled={loading}
+                     />
+                     <EyeIcon
+                        isVisible={passwordVisible}
+                        toggleVisibility={togglePasswordVisibility}
+                     />
+                  </div>
+                  <div className="relative password-input mx-auto">
+                     <input
+                        type={confirmPasswordVisible ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="focus:outline-none"
+                        placeholder="Confirm your password"
+                        disabled={loading}
+                     />
+                     <EyeIcon
+                        isVisible={confirmPasswordVisible}
+                        toggleVisibility={toggleConfirmPasswordVisibility}
+                     />
+                  </div>
                </div>
-            </div>
-            <div className="btn-container mt-4 w-full">
-               <button
-                  onClick={handleImportWallet}
-                  className="primary-btn"
-                  disabled={isLoading}>
-                  {isLoading ? "Importing..." : "Import Wallet"}
-               </button>
-            </div>
+            )}
 
             <button
                onClick={handleGoBack}

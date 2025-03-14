@@ -9,19 +9,7 @@ import { defineChain } from "viem";
 
 export const WalletContext = createContext();
 
-// Scroll network configuration
 const SCROLL_NETWORKS = {
-   mainnet: {
-      name: "Scroll Mainnet",
-      rpcUrl: "https://rpc.scroll.io",
-      chainId: 534352,
-      blockExplorer: "https://scrollscan.com",
-      nativeCurrency: {
-         name: "ETH",
-         symbol: "ETH",
-         decimals: 18,
-      },
-   },
    testnet: {
       name: "Scroll Sepolia",
       rpcUrl: "https://sepolia-rpc.scroll.io",
@@ -36,7 +24,7 @@ const SCROLL_NETWORKS = {
 };
 
 const scrollSepolia = defineChain({
-   id: 534351, // Scroll Sepolia chain ID
+   id: 534351,
    name: "Scroll Sepolia",
    network: "scroll-sepolia",
    nativeCurrency: {
@@ -57,7 +45,6 @@ const scrollSepolia = defineChain({
    },
 });
 
-// Common token addresses on Scroll Sepolia
 const SCROLL_TOKENS = {
    USDC: {
       address: "0x5fd84259d66Cd46123540766Be93DFE6D43130D7",
@@ -225,6 +212,7 @@ export const WalletProvider = ({ children }) => {
          return balanceEth;
       } catch (error) {
          console.error("Error updating balance:", error);
+         setBalance("0");
          return "0";
       }
    };
@@ -240,9 +228,17 @@ export const WalletProvider = ({ children }) => {
             "function symbol() view returns (string)",
          ];
 
+         const ethPriceResponse = await fetch(
+            "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_24hr_change=true"
+         );
+         const ethPriceData = await ethPriceResponse.json();
+         const ethPrice = ethPriceData.ethereum.usd;
+         const ethChange = ethPriceData.ethereum.usd_24h_change;
+         const ethChangePercent =
+            ethPriceData.ethereum.usd_24h_change_percentage;
+
          const ethBalanceWei = await provider.getBalance(walletAddress);
          const ethBalanceFormatted = ethers.utils.formatEther(ethBalanceWei);
-         const ethPrice = 2593.3;
          const ethValueUSD = parseFloat(ethBalanceFormatted) * ethPrice;
 
          tokenList.push({
@@ -251,11 +247,12 @@ export const WalletProvider = ({ children }) => {
             amount: ethBalanceFormatted,
             displayAmount: `${parseFloat(ethBalanceFormatted).toFixed(4)} ETH`,
             value: `$${ethValueUSD.toFixed(2)}`,
-            change: "+$24.30",
-            changePercent: "+1.2%",
+            change: `<span class="math-inline">\{ethChange \> 0 ? '\+' \: ''\}</span>${ethChange.toFixed(
+               2
+            )}`,
+            changePercent: `<span class="math-inline">\{ethChangePercent \> 0 ? '\+' \: ''\}</span>{ethChangePercent.toFixed(2)}%`,
             icon: "ethereum",
          });
-
          for (const [name, token] of Object.entries(SCROLL_TOKENS)) {
             try {
                const contract = new ethers.Contract(
@@ -267,7 +264,15 @@ export const WalletProvider = ({ children }) => {
                const decimals = token.decimals;
                const formatted = ethers.utils.formatUnits(balance, decimals);
 
-               const mockPrice = name === "USDC" || name === "USDT" ? 1.0 : 0.8;
+               let mockPrice = 1.0;
+               if (name === "SCROLL") {
+                  const scrPriceResponse = await fetch(
+                     "[https://api.coingecko.com/api/v3/simple/price?ids=scroll&vs_currencies=usd](https://api.coingecko.com/api/v3/simple/price?ids=scroll&vs_currencies=usd)"
+                  );
+                  const scrPriceData = await scrPriceResponse.json();
+                  mockPrice = scrPriceData.scroll.usd;
+               }
+
                const valueUSD = parseFloat(formatted) * mockPrice;
 
                if (parseFloat(formatted) > 0) {
@@ -365,40 +370,19 @@ export const WalletProvider = ({ children }) => {
    const getTransactions = async (walletAddress) => {
       try {
          const provider = getProvider();
-         const balanceWei = await provider.getBalance(walletAddress);
-
-         if (balanceWei.gt(0)) {
-            setTransactions([
-               {
-                  type: "Receive",
-                  address: `0x${Math.random()
-                     .toString(16)
-                     .slice(2, 10)}...${Math.random()
-                     .toString(16)
-                     .slice(2, 8)}`,
-                  amount: `${ethers.utils.formatEther(balanceWei.div(2))} ETH`,
-                  icon: "ethereum",
-                  timestamp: Date.now() - 86400000,
-                  txHash: `0x${Math.random().toString(16).slice(2, 42)}`,
-                  network: "Scroll Sepolia",
-               },
-               {
-                  type: "Contract Interaction",
-                  address: `0x${Math.random()
-                     .toString(16)
-                     .slice(2, 10)}...${Math.random()
-                     .toString(16)
-                     .slice(2, 8)}`,
-                  amount: `0.001 ETH`,
-                  icon: "ethereum",
-                  timestamp: Date.now() - 172800000,
-                  txHash: `0x${Math.random().toString(16).slice(2, 42)}`,
-                  network: "Scroll Sepolia",
-               },
-            ]);
-         } else {
-            setTransactions([]);
-         }
+         const history = await provider.getHistory(walletAddress);
+         const transactionList = history.map((tx) => {
+            return {
+               type: tx.from === walletAddress ? "Send" : "Receive",
+               address: tx.from === walletAddress ? tx.to : tx.from,
+               amount: ethers.utils.formatEther(tx.value),
+               icon: "ethereum",
+               timestamp: tx.timestamp * 1000,
+               txHash: tx.hash,
+               network: network.name,
+            };
+         });
+         setTransactions(transactionList);
       } catch (error) {
          console.error("Error getting transactions:", error);
          setTransactions([]);
@@ -514,7 +498,6 @@ export const WalletProvider = ({ children }) => {
          setTransactions((prev) => [newTx, ...prev]);
 
          await fetchTokenBalances(address);
-
          return {
             success: true,
             txHash: tx.hash,
@@ -528,7 +511,6 @@ export const WalletProvider = ({ children }) => {
          };
       }
    };
-
    const getSwapQuotes = async (fromTokenAddress, toTokenAddress, amount) => {
       try {
          const amountBigInt = ethers.utils.parseUnits(amount, 18).toBigInt();
@@ -546,7 +528,6 @@ export const WalletProvider = ({ children }) => {
          throw error;
       }
    };
-
    const executeSwap = async (quote) => {
       try {
          const swapResult = await relayClient.swap.executeSwap({

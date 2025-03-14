@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../context/WalletContext";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import "./pages.css";
+import EyeIcon from "../Components/EyeIcon/EyeIcon";
 
 const CreateWalletPage = () => {
    const [password, setPassword] = useState("");
@@ -14,6 +15,8 @@ const CreateWalletPage = () => {
    const [loading, setLoading] = useState(false);
    const [error, setError] = useState(null);
    const [termsAccepted, setTermsAccepted] = useState(false);
+   const [passwordVisible, setPasswordVisible] = useState(false);
+   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
    useEffect(() => {
       let timer;
@@ -39,13 +42,27 @@ const CreateWalletPage = () => {
          return;
       }
 
-      // Save password temporarily
-      sessionStorage.setItem("wallet-password", password);
-
-      // Go to loading page immediately
-      navigate("/creating-wallet");
+      setLoading(true);
+      try {
+         const success = await createWallet(password);
+         if (success) {
+            navigate("/creating-wallet");
+         } else {
+            setError("Failed to create wallet.");
+         }
+      } catch (err) {
+         setError(err.message || "An error occurred.");
+      } finally {
+         setLoading(false);
+      }
+   };
+   const togglePasswordVisibility = () => {
+      setPasswordVisible(!passwordVisible);
    };
 
+   const toggleConfirmPasswordVisibility = () => {
+      setConfirmPasswordVisible(!confirmPasswordVisible);
+   };
    const handleTermsChange = (e) => {
       setTermsAccepted(e.target.checked);
    };
@@ -62,24 +79,35 @@ const CreateWalletPage = () => {
                </p>
             </div>
             <form onSubmit={handleSubmit} className="submit-form">
-               <div className="space-y-4">
-                  <input
-                     type="password"
-                     value={password}
-                     onChange={(e) => setPassword(e.target.value)}
-                     className="password-input"
-                     placeholder="Enter your password"
-                     disabled={loading}
-                  />
-
-                  <input
-                     type="password"
-                     value={confirmPassword}
-                     onChange={(e) => setConfirmPassword(e.target.value)}
-                     className="password-input"
-                     placeholder="Confirm your password"
-                     disabled={loading}
-                  />
+               <div className="space-y-4 w-full">
+                  <div className="relative password-input mx-auto">
+                     <input
+                        type={passwordVisible ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="focus:outline-none"
+                        placeholder="Enter your password"
+                        disabled={loading}
+                     />
+                     <EyeIcon
+                        isVisible={passwordVisible}
+                        toggleVisibility={togglePasswordVisibility}
+                     />
+                  </div>
+                  <div className="relative password-input mx-auto">
+                     <input
+                        type={confirmPasswordVisible ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="focus:outline-none"
+                        placeholder="Confirm your password"
+                        disabled={loading}
+                     />
+                     <EyeIcon
+                        isVisible={confirmPasswordVisible}
+                        toggleVisibility={toggleConfirmPasswordVisibility}
+                     />
+                  </div>
                   {!passwordLength && (
                      <p className="text-red-500 text-sm mt-1 error">
                         Password should be at least 8 characters long.
