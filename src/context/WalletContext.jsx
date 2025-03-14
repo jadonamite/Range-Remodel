@@ -34,6 +34,7 @@ const SCROLL_NETWORKS = {
       },
    },
 };
+
 const scrollSepolia = defineChain({
    id: 534351, // Scroll Sepolia chain ID
    name: "Scroll Sepolia",
@@ -55,25 +56,25 @@ const scrollSepolia = defineChain({
       },
    },
 });
+
 // Common token addresses on Scroll Sepolia
 const SCROLL_TOKENS = {
    USDC: {
-      address: "0x5fd84259d66Cd46123540766Be93DFE6D43130D7", // Example USDC address on Scroll Sepolia
+      address: "0x5fd84259d66Cd46123540766Be93DFE6D43130D7",
       decimals: 6,
       symbol: "USDC",
       name: "USD Coin",
       icon: "usdc",
    },
    USDT: {
-      address: "0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df", // Example USDT address on Scroll Sepolia
+      address: "0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df",
       decimals: 6,
       symbol: "USDT",
       name: "Tether USD",
       icon: "usdt",
    },
-   // Example Scroll ecosystem token
    SCROLL: {
-      address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1", // This is a placeholder address
+      address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       decimals: 18,
       symbol: "SCR",
       name: "Scroll Token",
@@ -94,17 +95,16 @@ export const WalletProvider = ({ children }) => {
       latency: 0,
    });
 
-   // Get Scroll network provider
    const getProvider = () => {
       return new ethers.providers.JsonRpcProvider(network.rpcUrl);
    };
+
    const relayClient = createClient({
-      baseApiUrl: TESTNET_RELAY_API, // Scroll api endpoint
-      source: "RangeWallet_v1", //Unique source identifier
+      baseApiUrl: TESTNET_RELAY_API,
+      source: "RangeWallet_v1",
       chains: [convertViemChainToRelayChain(scrollSepolia)],
    });
 
-   // Check network connection and latency
    const checkNetworkStatus = async () => {
       try {
          const provider = getProvider();
@@ -127,10 +127,8 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
-   // Function to create a new wallet
    const createWallet = async (password) => {
       try {
-         // Check network connection before proceeding
          const isNetworkAvailable = await checkNetworkStatus();
          if (!isNetworkAvailable) {
             throw new Error("Cannot connect to Scroll network");
@@ -139,7 +137,6 @@ export const WalletProvider = ({ children }) => {
          const newWallet = ethers.Wallet.createRandom();
          const encryptedWallet = await newWallet.encrypt(password);
 
-         // Save with network info
          const walletData = {
             encryptedWallet,
             network: network.name,
@@ -160,10 +157,8 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
-   // Function to import an existing wallet
    const importWallet = async (recoveryPhrase, password) => {
       try {
-         // Check network connection before proceeding
          const isNetworkAvailable = await checkNetworkStatus();
          if (!isNetworkAvailable) {
             throw new Error("Cannot connect to Scroll network");
@@ -172,7 +167,6 @@ export const WalletProvider = ({ children }) => {
          const newWallet = ethers.Wallet.fromMnemonic(recoveryPhrase);
          const encryptedWallet = await newWallet.encrypt(password);
 
-         // Save with network info
          const walletData = {
             encryptedWallet,
             network: network.name,
@@ -193,10 +187,8 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
-   // Function to load the wallet from local storage
    const loadWallet = async (password) => {
       try {
-         // Check network connection before proceeding
          const isNetworkAvailable = await checkNetworkStatus();
          if (!isNetworkAvailable) {
             throw new Error("Cannot connect to Scroll network");
@@ -224,7 +216,6 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
-   // Function to update the wallet balance
    const updateBalance = async (walletAddress) => {
       try {
          const provider = getProvider();
@@ -238,38 +229,33 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
-   // Function to fetch ERC20 token balances
    const fetchTokenBalances = async (walletAddress) => {
       try {
          const provider = getProvider();
          const tokenList = [];
 
-         // ERC20 ABI for balanceOf
          const erc20Abi = [
             "function balanceOf(address owner) view returns (uint256)",
             "function decimals() view returns (uint8)",
             "function symbol() view returns (string)",
          ];
 
-         // Fetch ETH balance first
          const ethBalanceWei = await provider.getBalance(walletAddress);
          const ethBalanceFormatted = ethers.utils.formatEther(ethBalanceWei);
-         const ethPrice = 2593.3; // In a real app, fetch this from an API
+         const ethPrice = 2593.3;
          const ethValueUSD = parseFloat(ethBalanceFormatted) * ethPrice;
 
-         // Add ETH to the list
          tokenList.push({
             name: "Ethereum",
             symbol: "ETH",
             amount: ethBalanceFormatted,
             displayAmount: `${parseFloat(ethBalanceFormatted).toFixed(4)} ETH`,
             value: `$${ethValueUSD.toFixed(2)}`,
-            change: "+$24.30", // Would be calculated from price history in real app
+            change: "+$24.30",
             changePercent: "+1.2%",
             icon: "ethereum",
          });
 
-         // Fetch token balances
          for (const [name, token] of Object.entries(SCROLL_TOKENS)) {
             try {
                const contract = new ethers.Contract(
@@ -281,8 +267,6 @@ export const WalletProvider = ({ children }) => {
                const decimals = token.decimals;
                const formatted = ethers.utils.formatUnits(balance, decimals);
 
-               // Mock price and change values for demo
-               // In a real app, you would fetch these from an API
                const mockPrice = name === "USDC" || name === "USDT" ? 1.0 : 0.8;
                const valueUSD = parseFloat(formatted) * mockPrice;
 
@@ -295,7 +279,7 @@ export const WalletProvider = ({ children }) => {
                         token.symbol
                      }`,
                      value: `$${valueUSD.toFixed(2)}`,
-                     change: "+$0.50", // Would be calculated from price history in real app
+                     change: "+$0.50",
                      changePercent: "+0.8%",
                      icon: token.icon,
                   });
@@ -305,9 +289,7 @@ export const WalletProvider = ({ children }) => {
             }
          }
 
-         // Add zero balance tokens for display
          if (tokenList.length === 1) {
-            // Only ETH was added
             tokenList.push({
                name: "USD Coin",
                symbol: "USDC",
@@ -345,7 +327,6 @@ export const WalletProvider = ({ children }) => {
          setAssets(tokenList);
       } catch (error) {
          console.error("Error fetching token balances:", error);
-         // Set default assets on error
          setAssets([
             {
                name: "Ethereum",
@@ -381,16 +362,12 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
-   // Function to get transaction history from Scroll explorer API
    const getTransactions = async (walletAddress) => {
       try {
-         // In a real app, you would query the Scroll block explorer API
-         // For this example, we'll create mock transactions if there's a balance
          const provider = getProvider();
          const balanceWei = await provider.getBalance(walletAddress);
 
          if (balanceWei.gt(0)) {
-            // Mock transactions with Scroll-specific details
             setTransactions([
                {
                   type: "Receive",
@@ -401,7 +378,7 @@ export const WalletProvider = ({ children }) => {
                      .slice(2, 8)}`,
                   amount: `${ethers.utils.formatEther(balanceWei.div(2))} ETH`,
                   icon: "ethereum",
-                  timestamp: Date.now() - 86400000, // 1 day ago
+                  timestamp: Date.now() - 86400000,
                   txHash: `0x${Math.random().toString(16).slice(2, 42)}`,
                   network: "Scroll Sepolia",
                },
@@ -414,13 +391,12 @@ export const WalletProvider = ({ children }) => {
                      .slice(2, 8)}`,
                   amount: `0.001 ETH`,
                   icon: "ethereum",
-                  timestamp: Date.now() - 172800000, // 2 days ago
+                  timestamp: Date.now() - 172800000,
                   txHash: `0x${Math.random().toString(16).slice(2, 42)}`,
                   network: "Scroll Sepolia",
                },
             ]);
          } else {
-            // No transactions yet
             setTransactions([]);
          }
       } catch (error) {
@@ -429,7 +405,6 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
-   // Function to send ETH transaction
    const sendTransaction = async (toAddress, amount) => {
       try {
          if (!wallet) throw new Error("No wallet loaded");
@@ -437,36 +412,29 @@ export const WalletProvider = ({ children }) => {
          const provider = getProvider();
          const walletWithProvider = wallet.connect(provider);
 
-         // Convert amount to wei
          const amountWei = ethers.utils.parseEther(amount);
 
-         // Check if we have enough balance
          const currentBalance = await provider.getBalance(address);
          if (currentBalance.lt(amountWei)) {
             throw new Error("Insufficient balance");
          }
 
-         // Get the current gas price from Scroll network
          const gasPrice = await provider.getGasPrice();
 
-         // Estimate gas limit for the transaction
          const gasLimit = await provider.estimateGas({
             to: toAddress,
             value: amountWei,
          });
 
-         // Create transaction with proper gas settings for Scroll
          const tx = await walletWithProvider.sendTransaction({
             to: toAddress,
             value: amountWei,
             gasPrice: gasPrice,
-            gasLimit: gasLimit.mul(12).div(10), // Add 20% buffer for gas limit
+            gasLimit: gasLimit.mul(12).div(10),
          });
 
-         // Wait for transaction to be mined
          await tx.wait();
 
-         // Add the transaction to the list immediately
          const newTx = {
             type: "Send",
             address: toAddress,
@@ -479,14 +447,13 @@ export const WalletProvider = ({ children }) => {
 
          setTransactions((prev) => [newTx, ...prev]);
 
-         // Update balance and token balances
          await updateBalance(address);
          await fetchTokenBalances(address);
 
          return {
             success: true,
             txHash: tx.hash,
-            blockExplorerUrl: `${network.blockExplorer}/tx/${tx.hash}`,
+            blockExplorerUrl: `<span class="math-inline">\{network\.blockExplorer\}/tx/</span>{tx.hash}`,
          };
       } catch (error) {
          console.error("Error sending transaction:", error);
@@ -497,7 +464,6 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
-   // Function to send ERC20 tokens
    const sendToken = async (tokenAddress, toAddress, amount, decimals) => {
       try {
          if (!wallet) throw new Error("No wallet loaded");
@@ -505,45 +471,36 @@ export const WalletProvider = ({ children }) => {
          const provider = getProvider();
          const walletWithProvider = wallet.connect(provider);
 
-         // ERC20 ABI for transfer function
          const erc20Abi = [
             "function transfer(address to, uint amount) returns (bool)",
             "function balanceOf(address owner) view returns (uint256)",
             "function symbol() view returns (string)",
          ];
 
-         // Create contract instance
          const tokenContract = new ethers.Contract(
             tokenAddress,
             erc20Abi,
             walletWithProvider
          );
 
-         // Convert amount based on token decimals
          const amountBigNumber = ethers.utils.parseUnits(amount, decimals);
 
-         // Check if we have enough tokens
          const balance = await tokenContract.balanceOf(address);
          if (balance.lt(amountBigNumber)) {
             throw new Error("Insufficient token balance");
          }
 
-         // Get token symbol
          const symbol = await tokenContract.symbol();
 
-         // Get current gas price
          const gasPrice = await provider.getGasPrice();
 
-         // Send the transaction
          const tx = await tokenContract.transfer(toAddress, amountBigNumber, {
             gasPrice: gasPrice,
-            gasLimit: 100000, // Standard gas limit for ERC20 transfers
+            gasLimit: 100000,
          });
 
-         // Wait for transaction to be mined
          await tx.wait();
 
-         // Add to transactions list
          const newTx = {
             type: "Send",
             address: toAddress,
@@ -556,13 +513,12 @@ export const WalletProvider = ({ children }) => {
 
          setTransactions((prev) => [newTx, ...prev]);
 
-         // Update balances
          await fetchTokenBalances(address);
 
          return {
             success: true,
             txHash: tx.hash,
-            blockExplorerUrl: `${network.blockExplorer}/tx/${tx.hash}`,
+            blockExplorerUrl: `<span class="math-inline">\{network\.blockExplorer\}/tx/</span>{tx.hash}`,
          };
       } catch (error) {
          console.error("Error sending token:", error);
@@ -573,17 +529,15 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
-   // Function to get swap quotes
    const getSwapQuotes = async (fromTokenAddress, toTokenAddress, amount) => {
       try {
-         // Convert amount to BigInt (viem uses BigInt)
-         const amountBigInt = ethers.utils.parseUnits(amount, 18).toBigInt(); // Assuming 18 decimals, adjust if needed
+         const amountBigInt = ethers.utils.parseUnits(amount, 18).toBigInt();
 
          const quotes = await relayClient.swap.getQuotes({
             fromTokenAddress,
             toTokenAddress,
             amount: amountBigInt,
-            userAddress: address, // Your wallet address
+            userAddress: address,
          });
 
          return quotes;
@@ -593,12 +547,11 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
-   // Function to execute a swap
    const executeSwap = async (quote) => {
       try {
          const swapResult = await relayClient.swap.executeSwap({
             quote: quote,
-            userAddress: address, // Your wallet address
+            userAddress: address,
          });
 
          return swapResult;
@@ -608,7 +561,6 @@ export const WalletProvider = ({ children }) => {
       }
    };
 
-   // Function to disconnect wallet
    const disconnectWallet = () => {
       setWallet(null);
       setAddress("");
@@ -618,7 +570,6 @@ export const WalletProvider = ({ children }) => {
       setIsConnected(false);
    };
 
-   // Switch network (mainnet/testnet)
    const switchNetwork = async (networkType) => {
       if (networkType !== "mainnet" && networkType !== "testnet") {
          throw new Error("Invalid network type");
@@ -626,7 +577,6 @@ export const WalletProvider = ({ children }) => {
 
       setNetwork(SCROLL_NETWORKS[networkType]);
 
-      // If wallet is connected, refresh data for new network
       if (isConnected && address) {
          await checkNetworkStatus();
          await updateBalance(address);
@@ -637,18 +587,16 @@ export const WalletProvider = ({ children }) => {
       return true;
    };
 
-   // Check for network issues periodically
    useEffect(() => {
       const intervalId = setInterval(() => {
          if (isConnected) {
             checkNetworkStatus();
          }
-      }, 30000); // Check every 30 seconds
+      }, 30000);
 
       return () => clearInterval(intervalId);
    }, [isConnected]);
 
-   // Update data when address changes
    useEffect(() => {
       if (address) {
          updateBalance(address);
@@ -657,7 +605,6 @@ export const WalletProvider = ({ children }) => {
       }
    }, [address]);
 
-   // Initial network check on component mount
    useEffect(() => {
       checkNetworkStatus();
    }, []);
