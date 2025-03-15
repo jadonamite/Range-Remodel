@@ -1299,13 +1299,6 @@ const WalletPage = () => {
                   EXCHANGE
                </button>
             </Link>
-
-            <button
-               className="action-button exchange"
-               onClick={() => navigate("/exchange")}
-               aria-label="Exchange cryptocurrency">
-               <RefreshCw size={20} /> EXCHANGE
-            </button>
          </div>
 
          <div className="wallet-content">
