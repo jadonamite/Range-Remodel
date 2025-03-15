@@ -13,6 +13,7 @@ import WalletCreated from "./pages/WalletCreatedPage/WalletCreatedPage.jsx";
 import BackupPage from "./pages/BackupPage.jsx";
 import VerifyBackupPage from "./pages/VerifyPage";
 import WalletPage from "./pages/WalletPage/WalletPage.jsx";
+import SwapComponent from "./exchangePages/swapcomponent.jsx";
 import SendPage from "./pages/SendPage";
 import ReceivePage from "./pages/ReceivePage";
 import CreatingWalletPage from "./pages/CreatingWalletPage";
@@ -36,6 +37,7 @@ function App() {
                <Route path="/verify" element={<VerifyBackupPage />} />
                <Route path="/created" element={<WalletCreated />} />
                <Route path="/wallet" element={<WalletPage />} />
+               <Route path="/swap" element={<SwapComponent />} />
                <Route path="/send" element={<SendPage />} />
                <Route path="/receive" element={<ReceivePage />} />
                <Route path="*" element={<Navigate to="/" />} />
