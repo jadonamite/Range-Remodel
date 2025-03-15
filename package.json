@@ -10,13 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@reservoir0x/relay-sdk": "^1.6.8",
     "axios": "^1.8.1",
     "lucide-react": "^0.479.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "viem": "^2.23.10",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
