@@ -5,6 +5,7 @@ import React, {
    useCallback,
    memo,
 } from "react";
+import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../../context/WalletContext";
 import { Link } from "react-router-dom";
 import {
@@ -876,7 +877,7 @@ const WalletPage = () => {
       sendToken,
       SCROLL_TOKENS,
    } = useContext(WalletContext);
-
+   const navigate = useNavigate();
    const [totalBalance, setTotalBalance] = useState("$0.00");
    const [changeAmount, setChangeAmount] = useState("$0.00");
    const [changePercent, setChangePercent] = useState("0.00%");
@@ -1293,7 +1294,7 @@ const WalletPage = () => {
                BUY
             </button>
 
-            <Link to="/exchange" className="action-button exchange">
+            <Link to="/swap" className="action-button exchange">
                <button aria-label="Exchange cryptocurrency">
                   <RefreshCw size={20} />
                   EXCHANGE
@@ -1302,7 +1303,7 @@ const WalletPage = () => {
 
             <button
                className="action-button exchange"
-               onClick={() => navigate("/exchange")}
+               onClick={() => navigate("/swap")}
                aria-label="Exchange cryptocurrency">
                <RefreshCw size={20} /> EXCHANGE
             </button>
