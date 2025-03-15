@@ -28,6 +28,9 @@ const CreateWalletPage = () => {
       }
       return () => clearTimeout(timer);
    }, [passwordLength, passwordMatch]);
+   const handleGoBack = () => {
+      navigate("/");
+   };
 
    const handleSubmit = async (e) => {
       e.preventDefault();
@@ -137,6 +140,11 @@ const CreateWalletPage = () => {
                   )}
                </button>
             </form>
+            <button
+               onClick={handleGoBack}
+               className="secondary-btn w-full mt-2">
+               Back
+            </button>{" "}
          </div>
 
          <div className="TandC">

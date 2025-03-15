@@ -2,28 +2,7 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../context/WalletContext";
 import "./pages.css";
-
-const EyeIcon = ({ onMouseDown, onMouseUp, onMouseLeave }) => (
-   <div
-      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
-      onMouseLeave={onMouseLeave}>
-      <svg
-         xmlns="http://www.w3.org/2000/svg"
-         width="20"
-         height="20"
-         viewBox="0 0 24 24"
-         fill="none"
-         stroke="currentColor"
-         strokeWidth="2"
-         strokeLinecap="round"
-         strokeLinejoin="round">
-         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-         <circle cx="12" cy="12" r="3"></circle>
-      </svg>
-   </div>
-);
+import EyeIcon from "../Components/EyeIcon/EyeIcon";
 
 const SeedPhraseInput = ({
    index,
@@ -268,41 +247,64 @@ const ImportWalletPage = () => {
                </>
             )}
             {step === 2 && (
-               <div className="space-y-4 w-full">
-                  <div className="relative password-input mx-auto">
-                     <input
-                        type={passwordVisible ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="focus:outline-none"
-                        placeholder="Enter your password"
-                        disabled={loading}
-                     />
-                     <EyeIcon
-                        isVisible={passwordVisible}
-                        toggleVisibility={togglePasswordVisibility}
-                     />
+               <>
+                  <div className="space-y-4 w-full">
+                     <div className="relative password-input mx-auto">
+                        <input
+                           type={passwordVisible ? "text" : "password"}
+                           value={password}
+                           onChange={(e) => setPassword(e.target.value)}
+                           className="focus:outline-none"
+                           placeholder="Enter your password"
+                           disabled={isLoading}
+                        />
+                        <EyeIcon
+                           isVisible={passwordVisible}
+                           toggleVisibility={togglePasswordVisibility}
+                        />
+                     </div>
+                     <div className="relative password-input mx-auto">
+                        <input
+                           type={confirmPasswordVisible ? "text" : "password"}
+                           value={confirmPassword}
+                           onChange={(e) => setConfirmPassword(e.target.value)}
+                           className="focus:outline-none"
+                           placeholder="Confirm your password"
+                           disabled={isLoading}
+                        />
+                        <EyeIcon
+                           isVisible={confirmPasswordVisible}
+                           toggleVisibility={toggleConfirmPasswordVisibility}
+                        />
+                     </div>
+                     {!passwordMatch && (
+                        <p className="text-red-500 text-sm mt-1 error">
+                           Passwords do not match.
+                        </p>
+                     )}
                   </div>
-                  <div className="relative password-input mx-auto">
-                     <input
-                        type={confirmPasswordVisible ? "text" : "password"}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="focus:outline-none"
-                        placeholder="Confirm your password"
-                        disabled={loading}
-                     />
-                     <EyeIcon
-                        isVisible={confirmPasswordVisible}
-                        toggleVisibility={toggleConfirmPasswordVisibility}
-                     />
+                  <div className="btn-container mt-8 w-full">
+                     {" "}
+                     <button
+                        onClick={handleImportWallet}
+                        className={`primary-btn ${
+                           password && confirmPassword
+                              ? ""
+                              : "cursor-not-allowed opacity-50"
+                        }`}
+                        disabled={isLoading || !password || !confirmPassword}>
+                        {isLoading ? "Importing..." : "Import Wallet"}
+                     </button>
+                     {!password && !confirmPassword && (
+                        <p className="text-red-500 text-sm mt-1 error">
+                           Password required.
+                        </p>
+                     )}
                   </div>
-               </div>
+               </>
             )}
 
-            <button
-               onClick={handleGoBack}
-               className="secondary-btn w-full mt-2">
+            <button onClick={handleGoBack} className="secondary-btn w-full">
                Back
             </button>
          </div>

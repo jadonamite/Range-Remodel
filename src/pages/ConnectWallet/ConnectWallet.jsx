@@ -16,6 +16,8 @@ const ConnectWallet = () => {
          const walletData = localStorage.getItem("scrollWallet");
          if (walletData) {
             setWalletExists(true);
+         } else {
+            setWalletExists(false);
          }
       };
       checkWallet();
@@ -33,6 +35,11 @@ const ConnectWallet = () => {
          // Error is handled in PasswordPrompt
          throw error;
       }
+   };
+
+   const handleClearStorage = () => {
+      localStorage.removeItem("scrollWallet");
+      setWalletExists(false);
    };
 
    return (
@@ -53,15 +60,28 @@ const ConnectWallet = () => {
                </div>
 
                <div className="space-y-4 mt-10">
-                  {walletExists && <PasswordPrompt onConnect={handleConnect} />}
+                  {walletExists && (
+                     <>
+                        <PasswordPrompt onConnect={handleConnect} />
+                        <button
+                           onClick={handleClearStorage}
+                           className="text-xs">
+                           Forgotten Password
+                        </button>
+                     </>
+                  )}
 
-                  <Link to="/create" className="primary-btn">
-                     Create Wallet
-                  </Link>
+                  {!walletExists && (
+                     <>
+                        <Link to="/create" className="primary-btn">
+                           Create Wallet
+                        </Link>
 
-                  <Link to="/import" className="tertiary-btn">
-                     Import Existing Wallet
-                  </Link>
+                        <Link to="/import" className="tertiary-btn">
+                           Import Existing Wallet
+                        </Link>
+                     </>
+                  )}
                </div>
             </div>
          </div>

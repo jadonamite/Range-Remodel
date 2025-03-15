@@ -2,10 +2,9 @@
 :root {
    --primary-color: #6a3ff5;
    --secondary-color: #2a9d8f;
-   --scroll-primary: #ffac3a;
-   --scroll-secondary: #ffd700;
-   --scroll-accent: #fffacd;
-   --scroll-background: #fffcf5;
+   --scroll-primary: #e83aff;
+   --scroll-secondary: #00ff40;
+   --scroll-background: #f0edf7;
    --text-primary: #333333;
    --text-secondary: #666666;
    --border-color: #eeeeee;
@@ -165,9 +164,10 @@
    margin-right: 16px;
 }
 
-.scroll-logo {
-   width: 40px;
-   height: 40px;
+.range-logo {
+   margin-top: 0.5rem;
+   width: 35px;
+   height: 45px;
 }
 
 .wallet-account {

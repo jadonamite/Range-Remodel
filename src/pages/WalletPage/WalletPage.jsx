@@ -27,6 +27,30 @@ import {
 } from "lucide-react";
 import "./WalletPage.css";
 
+// Toast notification component for feedback
+const Toast = memo(({ message, type = "success", onClose }) => {
+   useEffect(() => {
+      const timer = setTimeout(() => {
+         onClose();
+      }, 3000);
+      return () => clearTimeout(timer);
+   }, [onClose]);
+
+   return (
+      <div className={`toast toast-${type}`}>
+         {type === "success" ? (
+            <CheckCircle size={16} />
+         ) : (
+            <AlertCircle size={16} />
+         )}
+         <span>{message}</span>
+         <button className="toast-close" onClick={onClose}>
+            <X size={14} />
+         </button>
+      </div>
+   );
+});
+
 // Icon component for different cryptocurrencies
 const CryptoIcon = memo(({ type }) => {
    const iconMap = {
@@ -41,7 +65,6 @@ const CryptoIcon = memo(({ type }) => {
       color: "#888888",
       symbol: "?",
    };
-
    return (
       <div
          className="crypto-icon"
@@ -59,7 +82,6 @@ const TransactionItem = memo(({ transaction, network }) => {
       network === "Scroll Mainnet"
          ? "https://scrollscan.com/tx/"
          : "https://sepolia.scrollscan.com/tx/";
-
    return (
       <div className="transaction-item">
          <div className="transaction-left">
@@ -78,10 +100,8 @@ const TransactionItem = memo(({ transaction, network }) => {
                <a
                   href={`${explorerBaseUrl}${transaction.txHash}`}
                   target="_blank"
-                  rel="noopener noreferrer"
-                  className="tx-explorer-link"
-                  aria-label="View on Scroll Explorer">
-                  <ExternalLink size={14} />
+                  rel="noopener noreferrer">
+                  View <ExternalLink size={12} />
                </a>
             )}
          </div>
@@ -92,7 +112,6 @@ const TransactionItem = memo(({ transaction, network }) => {
 // Asset item component
 const AssetItem = memo(({ asset, onSelect }) => {
    const isPositiveChange = !asset.changePercent.includes("-");
-
    return (
       <div className="asset-item" onClick={() => onSelect && onSelect(asset)}>
          <div className="asset-left">
@@ -118,49 +137,47 @@ const AssetItem = memo(({ asset, onSelect }) => {
    );
 });
 
-// Network status indicator
+// Network Status: Displays connection status and latency.
 const NetworkStatus = memo(({ status, network }) => {
    const { connected, latency } = status;
    const networkName = network.name || "Scroll Network";
-
    return (
       <div className="network-status">
          {connected ? (
-            <div className="status-connected">
-               <Wifi size={14} className="status-icon" />
-               <span className="status-text">
-                  {networkName} ({latency}ms)
+            <div className="network-connected">
+               <Wifi size={14} />
+               <span>
+                  Connected <span className="text-green-500">{latency}ms</span>
                </span>
             </div>
          ) : (
-            <div className="status-disconnected">
-               <WifiOff size={14} className="status-icon" />
-               <span className="status-text">
-                  Connecting to {networkName}...
-               </span>
+            <div className="network-disconnected">
+               <WifiOff size={14} /> <span>Connecting...({networkName})</span>
             </div>
          )}
       </div>
    );
 });
 
-// Loading modal component
-const LoadingModal = memo(() => (
-   <div
-      className="loading-modal"
-      role="dialog"
-      aria-label="Loading wallet data">
-      <div className="loading-content">
-         <div className="loading-spinner"></div>
-         <p>Loading Scroll wallet data...</p>
+// Loading Modal: Shows a spinner and customizable loading message.
+const LoadingModal = memo(({ message = "Loading..." }) => {
+   return (
+      <div
+         className="loading-modal"
+         role="dialog"
+         aria-label="Loading wallet data">
+         <div className="loading-content">
+            <div className="loading-spinner"></div>
+            <p>Loading Scroll wallet data...</p>
+            <p>{message}</p>
+         </div>
       </div>
-   </div>
-));
+   );
+});
 
-// Modal Components
+// Modal: A reusable modal component.
 const Modal = ({ isOpen, onClose, title, children }) => {
    if (!isOpen) return null;
-
    return (
       <div className="modal-overlay" onClick={onClose}>
          <div className="modal-container" onClick={(e) => e.stopPropagation()}>
@@ -170,7 +187,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
                   className="close-button"
                   onClick={onClose}
                   aria-label="Close modal">
-                  <X size={20} />
+                  <X size={24} />
                </button>
             </div>
             <div className="modal-content">{children}</div>
@@ -179,15 +196,48 @@ const Modal = ({ isOpen, onClose, title, children }) => {
    );
 };
 
+const SessionExpiryModal = ({ isOpen, onExtend, onLogout }) => {
+   return (
+      <Modal isOpen={isOpen} onClose={() => {}} title="Session Expiring">
+         <div className="session-expiry-modal">
+            <AlertCircle size={48} className="warning-icon" />
+            <p>Your session is about to expire for security reasons.</p>
+            <div className="modal-actions">
+               <button className="btn btn-primary" onClick={onExtend}>
+                  Stay Logged In
+               </button>
+               <button className="btn btn-secondary" onClick={onLogout}>
+                  Logout
+               </button>
+            </div>
+         </div>
+      </Modal>
+   );
+};
+// Send Modal: Handles sending transactions, including form and status.
 const SendModal = ({ isOpen, onClose, assets, onSend, network }) => {
    const [recipient, setRecipient] = useState("");
    const [amount, setAmount] = useState("");
    const [selectedAsset, setSelectedAsset] = useState(
       assets[0]?.symbol || "ETH"
    );
-   const [status, setStatus] = useState(null); // null, 'pending', 'success', 'error'
    const [txResult, setTxResult] = useState(null);
    const [gasEstimate, setGasEstimate] = useState(null);
+   const [status, setStatus] = useState(null);
+   const [errorMessage, setErrorMessage] = useState("");
+
+   // Reset form when modal opens/closes
+   useEffect(() => {
+      if (isOpen) {
+         setRecipient("");
+         setAmount("");
+         setSelectedAsset(assets[0]?.symbol || "ETH");
+         setStatus(null);
+         setErrorMessage("");
+         setTxResult(null);
+         setGasEstimate(null);
+      }
+   }, [isOpen, assets]);
 
    const resetForm = () => {
       setRecipient("");
@@ -252,14 +302,28 @@ const SendModal = ({ isOpen, onClose, assets, onSend, network }) => {
    };
 
    // Handle send transaction
-   const handleSend = async (e) => {
-      e.preventDefault();
-      if (!recipient || !amount) return;
 
-      setStatus("pending");
+   const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      // Validate form
+      if (!recipient) {
+         setErrorMessage("Please enter a valid recipient address");
+         return;
+      }
+
+      if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+         setErrorMessage("Please enter a valid amount");
+         return;
+      }
+
+      setErrorMessage("");
+      setStatus("sending");
 
       try {
-         const assetDetails = getSelectedAssetDetails();
+         // Find the selected asset details
+         const assetDetails = assets.find((a) => a.symbol === selectedAsset);
+
          const result = await onSend(
             recipient,
             amount,
@@ -269,18 +333,15 @@ const SendModal = ({ isOpen, onClose, assets, onSend, network }) => {
 
          if (result.success) {
             setStatus("success");
-            setTxResult(result);
          } else {
             setStatus("error");
-            setTxResult(result);
+            setErrorMessage(
+               result.error || "Transaction failed. Please try again."
+            );
          }
       } catch (error) {
-         console.error("Transaction error:", error);
          setStatus("error");
-         setTxResult({
-            success: false,
-            error: error.message || "Transaction failed",
-         });
+         setErrorMessage(error.message || "An unexpected error occurred");
       }
    };
 
@@ -351,7 +412,7 @@ const SendModal = ({ isOpen, onClose, assets, onSend, network }) => {
          )}
 
          {!status && (
-            <form onSubmit={handleSend}>
+            <form onSubmit={handleSubmit}>
                <div className="form-group">
                   <label htmlFor="asset">Asset</label>
                   <select
@@ -443,7 +504,7 @@ const SendModal = ({ isOpen, onClose, assets, onSend, network }) => {
       </Modal>
    );
 };
-
+// Receive Modal: Displays wallet address and QR code.
 const ReceiveModal = ({ isOpen, onClose, address, network }) => {
    const [copied, setCopied] = useState(false);
 
@@ -488,7 +549,7 @@ const ReceiveModal = ({ isOpen, onClose, address, network }) => {
             <h4 className="address-label">Your Scroll Wallet Address</h4>
             <div className="address-value">{address}</div>
             <button className="copy-btn" onClick={copyAddressToClipboard}>
-               {copied ? <CheckCircle size={18} /> : <Copy size={18} />}
+               {copied ? <CheckCircle size={16} /> : <Copy size={16} />}
                {copied ? "Copied!" : "Copy Address"}
             </button>
          </div>
@@ -507,58 +568,310 @@ const ReceiveModal = ({ isOpen, onClose, address, network }) => {
       </Modal>
    );
 };
-
-// Network switch component
+// Network Switch: Allows switching between mainnet and testnet.
 const NetworkSwitch = memo(({ currentNetwork, onSwitch }) => {
    const [isOpen, setIsOpen] = useState(false);
 
-   const handleSelect = (networkType) => {
+   const networks = [
+      { id: "mainnet", name: "Scroll Mainnet" },
+      { id: "testnet", name: "Scroll Sepolia" },
+   ];
+
+   const handleNetworkSwitch = (networkId) => {
       setIsOpen(false);
-      onSwitch(networkType);
+      onSwitch(networkId);
    };
 
    return (
       <div className="network-switch">
-         <button
-            className={`network-switch-button ${
-               currentNetwork.includes("Sepolia") ? "testnet" : "mainnet"
-            }`}
-            onClick={() => setIsOpen(!isOpen)}>
-            <div className="network-switch-indicator"></div>
-            <span>{currentNetwork}</span>
-            <ArrowDown size={16} />
+         <button className="network-current" onClick={() => setIsOpen(!isOpen)}>
+            {currentNetwork}
+            <ArrowDown size={12} className={isOpen ? "rotated" : ""} />
          </button>
 
          {isOpen && (
             <div className="network-dropdown">
-               <div
-                  className="network-option mainnet"
-                  onClick={() => handleSelect("mainnet")}>
-                  <div className="network-option-indicator"></div>
-                  <span>Scroll Mainnet</span>
-               </div>
-               <div
-                  className="network-option testnet"
-                  onClick={() => handleSelect("testnet")}>
-                  <div className="network-option-indicator"></div>
-                  <span>Scroll Sepolia</span>
-               </div>
+               {networks.map((network) => (
+                  <button
+                     key={network.id}
+                     className={`network-option ${
+                        currentNetwork === network.name ? "active" : ""
+                     }`}
+                     onClick={() => handleNetworkSwitch(network.id)}>
+                     {network.name}
+                     {currentNetwork === network.name && (
+                        <CheckCircle size={12} />
+                     )}
+                  </button>
+               ))}
             </div>
          )}
       </div>
    );
 });
+// Wallet Connection: Handles wallet creation, import, and reconnection.
+const WalletConnection = () => {
+   const {
+      isConnected,
+      isWalletExisting,
+      createWallet,
+      importWallet,
+      loadWallet,
+   } = useContext(WalletContext);
+   const [password, setPassword] = useState("");
+   const [recoveryPhrase, setRecoveryPhrase] = useState("");
+   const [isCreating, setIsCreating] = useState(false);
+   const [isImporting, setIsImporting] = useState(false);
+   const [error, setError] = useState("");
+
+   // Handle password input
+   const handlePasswordChange = (e) => {
+      setPassword(e.target.value);
+   };
+
+   // Handle recovery phrase input
+   const handleRecoveryPhraseChange = (e) => {
+      setRecoveryPhrase(e.target.value);
+   };
+
+   // Handle wallet creation
+   const handleCreateWallet = async () => {
+      if (password.length < 8) {
+         setError("Password must be at least 8 characters long");
+         return;
+      }
+
+      setError("");
+      setIsCreating(true);
+
+      try {
+         const success = await createWallet(password);
+         if (!success) {
+            setError("Failed to create wallet");
+         }
+      } catch (err) {
+         setError(err.message);
+      } finally {
+         setIsCreating(false);
+      }
+   };
+
+   // Handle wallet import
+   const handleImportWallet = async () => {
+      if (password.length < 8) {
+         setError("Password must be at least 8 characters long");
+         return;
+      }
+
+      if (!recoveryPhrase.trim()) {
+         setError("Recovery phrase is required");
+         return;
+      }
+
+      setError("");
+      setIsImporting(true);
+
+      try {
+         const success = await importWallet(recoveryPhrase, password);
+         if (!success) {
+            setError("Failed to import wallet");
+         }
+      } catch (err) {
+         setError(err.message);
+      } finally {
+         setIsImporting(false);
+      }
+   };
+
+   // Handle wallet reconnection
+   const handleReconnectWallet = async () => {
+      if (password.length < 8) {
+         setError("Password must be at least 8 characters long");
+         return;
+      }
+
+      setError("");
+      setIsCreating(true);
+
+      try {
+         const success = await loadWallet(password);
+         if (!success) {
+            setError("Incorrect password or wallet is corrupted");
+         }
+      } catch (err) {
+         setError(err.message);
+      } finally {
+         setIsCreating(false);
+      }
+   };
+
+   // Return early if already connected
+   if (isConnected) {
+      return <div>Wallet is connected!</div>;
+   }
+
+   return (
+      <div className="wallet-connection">
+         <h2>Connect to Your Wallet</h2>
+
+         {error && <div className="error-message">{error}</div>}
+
+         <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+               type="password"
+               id="password"
+               value={password}
+               onChange={handlePasswordChange}
+               placeholder="Enter your password"
+            />
+         </div>
+
+         {isWalletExisting ? (
+            // Wallet exists, show reconnect option
+            <div className="reconnect-section">
+               <p>
+                  A wallet was found on this device. Enter your password to
+                  reconnect.
+               </p>
+               <button onClick={handleReconnectWallet} disabled={isCreating}>
+                  {isCreating ? "Connecting..." : "Reconnect Wallet"}
+               </button>
+               <div className="separator">or</div>
+               <button
+                  onClick={() => localStorage.removeItem("scrollWallet")}
+                  className="secondary-button">
+                  Use a Different Wallet
+               </button>
+            </div>
+         ) : (
+            // No wallet found, show create or import options
+            <div className="wallet-options">
+               <div className="option-section">
+                  <h3>Create New Wallet</h3>
+                  <button
+                     onClick={handleCreateWallet}
+                     disabled={isWalletConnectionCreating || isImporting}>
+                     {isCreating ? "Creating..." : "Create Wallet"}
+                  </button>
+               </div>
+
+               <div className="separator">or</div>
+
+               <div className="option-section">
+                  <h3>Import Existing Wallet</h3>
+                  <div className="form-group">
+                     <label htmlFor="recoveryPhrase">Recovery Phrase</label>
+                     <textarea
+                        id="recoveryPhrase"
+                        value={recoveryPhrase}
+                        onChange={handleRecoveryPhraseChange}
+                        placeholder="Enter your 12-word recovery phrase"
+                        rows={4}
+                     />
+                  </div>
+                  <button
+                     onClick={handleImportWallet}
+                     disabled={isCreating || isImporting}>
+                     {isImporting ? "Importing..." : "Import Wallet"}
+                  </button>
+               </div>
+            </div>
+         )}
+      </div>
+   );
+};
+
+// Default empty assets list - extracted to avoid duplication
+const DEFAULT_ASSETS = [
+   {
+      name: "Ethereum",
+      symbol: "ETH",
+      amount: "0.0000 ETH",
+      displayAmount: "0.0000 ETH",
+      value: "$0.00",
+      change: "$0.00",
+      changePercent: "0.00%",
+      icon: "ethereum",
+   },
+   {
+      name: "USD Coin",
+      symbol: "USDC",
+      amount: "0.00 USDC",
+      displayAmount: "0.00 USDC",
+      value: "$0.00",
+      change: "$0.00",
+      changePercent: "0.00%",
+      icon: "usdc",
+   },
+   {
+      name: "Tether USD",
+      symbol: "USDT",
+      amount: "0.00 USDT",
+      displayAmount: "0.00 USDT",
+      value: "$0.00",
+      change: "$0.00",
+      changePercent: "0.00%",
+      icon: "usdt",
+   },
+   {
+      name: "Scroll Token",
+      symbol: "SCR",
+      amount: "0.00 SCR",
+      displayAmount: "0.00 SCR",
+      value: "$0.00",
+      change: "$0.00",
+      changePercent: "0.00%",
+      icon: "scroll",
+   },
+];
+
+// Service to fetch cryptocurrency prices
+// Price service for fetching real-time cryptocurrency prices
+const PriceService = {
+   async getEthPrice() {
+      try {
+         const response = await fetch(
+            "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+         );
+         const data = await response.json();
+         return data.ethereum.usd;
+      } catch (error) {
+         console.error("Error fetching ETH price:", error);
+         // Return a fallback price if API call fails
+         return 1893.3; // Fallback price
+      }
+   },
+
+   // Could be expanded to fetch prices for other tokens
+   async getTokenPrice(tokenId) {
+      try {
+         const response = await fetch(
+            `https://api.coingecko.com/api/v3/simple/price?ids=${tokenId}&vs_currencies=usd`
+         );
+         const data = await response.json();
+         return data[tokenId]?.usd || 0;
+      } catch (error) {
+         console.error(`Error fetching ${tokenId} price:`, error);
+         return 0;
+      }
+   },
+};
 
 const WalletPage = () => {
    const {
       address,
+      assets: contextAssets,
       balance,
       transactions,
       updateBalance,
-      assets: contextAssets,
+      isConnected,
       network,
       networkStatus,
       switchNetwork,
+      disconnectWallet,
+      sessionExpiresAt,
+      extendSession,
       sendTransaction,
       sendToken,
       SCROLL_TOKENS,
@@ -574,6 +887,66 @@ const WalletPage = () => {
    const [isSendModalOpen, setIsSendModalOpen] = useState(false);
    const [isReceiveModalOpen, setIsReceiveModalOpen] = useState(false);
    const [refreshing, setRefreshing] = useState(false);
+   const [timeRemaining, setTimeRemaining] = useState("");
+   const [ethPrice, setEthPrice] = useState(null);
+   const [toast, setToast] = useState(null);
+   const [sessionWarning, setSessionWarning] = useState(false);
+
+   // Show toast notification
+   const showToast = (message, type = "success") => {
+      setToast({ message, type });
+   };
+
+   // Close toast notification
+   const closeToast = () => {
+      setToast(null);
+   };
+
+   // Handle session expiration
+   useEffect(() => {
+      if (!sessionExpiresAt) return;
+
+      const updateTimer = () => {
+         const now = new Date().getTime();
+         const remaining = sessionExpiresAt - now;
+
+         if (remaining <= 0) {
+            setTimeRemaining("Expired");
+            disconnectWallet(); // Logout when session expires
+            showToast(
+               "Your session has expired. Please log in again.",
+               "error"
+            );
+            return;
+         }
+
+         // Show warning 2 minutes before expiry
+         if (remaining < 120000 && !sessionWarning) {
+            setSessionWarning(true);
+         }
+
+         const minutes = Math.floor(remaining / 60000);
+         const seconds = Math.floor((remaining % 60000) / 1000);
+         setTimeRemaining(`${minutes}m ${seconds}s`);
+      };
+
+      updateTimer();
+      const timerId = setInterval(updateTimer, 1000);
+
+      return () => clearInterval(timerId);
+   }, [sessionExpiresAt, sessionWarning, disconnectWallet]);
+
+   // Function to handle session extension
+   const handleExtendSession = useCallback(() => {
+      extendSession();
+      setSessionWarning(false);
+      showToast("Session extended successfully");
+   }, [extendSession]);
+
+   // Function to handle logout
+   const handleLogout = useCallback(() => {
+      disconnectWallet();
+   }, [disconnectWallet]);
 
    // Function to format the address for display
    const formatAddress = useCallback((addr) => {
@@ -581,25 +954,34 @@ const WalletPage = () => {
       return `${addr.substring(0, 8)}....${addr.substring(addr.length - 8)}`;
    }, []);
 
-   // Calculate balance once when it updates
-   const calculateBalance = useCallback((balanceValue) => {
-      if (!balanceValue || isNaN(parseFloat(balanceValue))) return 0;
-
-      const ethPrice = 2593.3; // In a real app, fetch this from an API
-      return parseFloat(balanceValue) * ethPrice;
+   // Fetch ETH price and calculate balance
+   const fetchEthPrice = useCallback(async () => {
+      const price = await PriceService.getEthPrice();
+      setEthPrice(price);
+      return price;
    }, []);
 
-   // Copy address to clipboard
+   // Calculate balance with live ETH price
+   const calculateBalance = useCallback(
+      (balanceValue, price) => {
+         if (!balanceValue || isNaN(parseFloat(balanceValue))) return 0;
+         const ethPriceToUse = price || ethPrice || 2593.3; // Use provided price, stored price, or fallback
+         return parseFloat(balanceValue) * ethPriceToUse;
+      },
+      [ethPrice]
+   );
+
+   // Copy address to clipboard with UI feedback
    const copyAddressToClipboard = useCallback(() => {
       if (address) {
          navigator.clipboard
             .writeText(address)
             .then(() => {
-               // Show a toast notification (would be implemented in a real app)
-               console.log("Address copied to clipboard");
+               showToast("Address copied to clipboard");
             })
             .catch((err) => {
                console.error("Could not copy address:", err);
+               showToast("Failed to copy address", "error");
             });
       }
    }, [address]);
@@ -609,28 +991,43 @@ const WalletPage = () => {
       setHideBalance((prev) => !prev);
    }, []);
 
-   // Handle refresh
+   // Handle refresh with  feedback
    const handleRefresh = useCallback(async () => {
       if (refreshing || !address) return;
 
       setRefreshing(true);
       try {
-         await updateBalance(address);
+         // Refresh ETH price and balance simultaneously
+         const [_, updatedBalance] = await Promise.all([
+            fetchEthPrice(),
+            updateBalance(address),
+         ]);
+
+         showToast("Balance updated successfully");
       } catch (error) {
          console.error("Error refreshing balance:", error);
+         showToast("Failed to update balance", "error");
       } finally {
          setTimeout(() => setRefreshing(false), 1000); // Minimum 1 second refresh animation
       }
-   }, [address, updateBalance, refreshing]);
+   }, [address, updateBalance, refreshing, fetchEthPrice]);
 
-   // Handle network switch
+   // Handle network switch with error handling
    const handleNetworkSwitch = useCallback(
       async (networkType) => {
          try {
             setIsLoading(true);
             await switchNetwork(networkType);
+            showToast(
+               `Switched to ${
+                  networkType === "mainnet"
+                     ? "Scroll Mainnet"
+                     : "Scroll Sepolia"
+               }`
+            );
          } catch (error) {
             console.error("Error switching networks:", error);
+            showToast(`Failed to switch network: ${error.message}`, "error");
          } finally {
             setIsLoading(false);
          }
@@ -638,27 +1035,38 @@ const WalletPage = () => {
       [switchNetwork]
    );
 
-   // Handle send transaction
+   // Handle send transaction with error handling
    const handleSendTransaction = useCallback(
       async (recipient, amount, asset, assetDetails) => {
          try {
             if (asset === "ETH") {
-               return await sendTransaction(recipient, amount);
+               const result = await sendTransaction(recipient, amount);
+               return {
+                  success: true,
+                  txHash: result.transactionHash || result.hash || "",
+               };
             } else {
                // Find token details
                const token = SCROLL_TOKENS[asset];
                if (!token) throw new Error("Token not supported");
 
-               return await sendToken(
+               const result = await sendToken(
                   token.address,
                   recipient,
                   amount,
                   token.decimals
                );
+               return {
+                  success: true,
+                  txHash: result.transactionHash || result.hash || "",
+               };
             }
          } catch (error) {
             console.error("Error in transaction:", error);
-            return { success: false, error: error.message };
+            return {
+               success: false,
+               error: error.message || "Transaction failed. Please try again.",
+            };
          }
       },
       [sendTransaction, sendToken, SCROLL_TOKENS]
@@ -669,8 +1077,11 @@ const WalletPage = () => {
       const fetchData = async () => {
          setIsLoading(true);
          try {
+            // Fetch ETH price if not already set
+            const currentEthPrice = ethPrice || (await fetchEthPrice());
+
             if (balance) {
-               const balanceUSD = calculateBalance(balance);
+               const balanceUSD = calculateBalance(balance, currentEthPrice);
 
                // Calculate change from previous balance
                const change = balanceUSD - previousBalance;
@@ -702,53 +1113,13 @@ const WalletPage = () => {
                if (contextAssets && contextAssets.length > 0) {
                   setAssets(contextAssets);
                } else {
-                  // Default empty assets with zero values
-                  setAssets([
-                     {
-                        name: "Ethereum",
-                        symbol: "ETH",
-                        amount: "0.0000 ETH",
-                        displayAmount: "0.0000 ETH",
-                        value: "$0.00",
-                        change: "$0.00",
-                        changePercent: "0.00%",
-                        icon: "ethereum",
-                     },
-                     {
-                        name: "USD Coin",
-                        symbol: "USDC",
-                        amount: "0.00 USDC",
-                        displayAmount: "0.00 USDC",
-                        value: "$0.00",
-                        change: "$0.00",
-                        changePercent: "0.00%",
-                        icon: "usdc",
-                     },
-                     {
-                        name: "Tether USD",
-                        symbol: "USDT",
-                        amount: "0.00 USDT",
-                        displayAmount: "0.00 USDT",
-                        value: "$0.00",
-                        change: "$0.00",
-                        changePercent: "0.00%",
-                        icon: "usdt",
-                     },
-                     {
-                        name: "Scroll Token",
-                        symbol: "SCR",
-                        amount: "0.00 SCR",
-                        displayAmount: "0.00 SCR",
-                        value: "$0.00",
-                        change: "$0.00",
-                        changePercent: "0.00%",
-                        icon: "scroll",
-                     },
-                  ]);
+                  // Use DEFAULT_ASSETS constant instead of duplicating the code
+                  setAssets(DEFAULT_ASSETS);
                }
             }
          } catch (error) {
             console.error("Error loading wallet data:", error);
+            showToast("Failed to load wallet data", "error");
          } finally {
             setIsLoading(false);
          }
@@ -756,12 +1127,15 @@ const WalletPage = () => {
 
       fetchData();
 
-      // Set up interval to refresh balance periodically
+      // Set up interval to refresh balance and prices periodically
       const intervalId = setInterval(() => {
          if (address) {
-            updateBalance(address);
+            // Silently refresh data without showing loading state
+            Promise.all([fetchEthPrice(), updateBalance(address)]).catch(
+               (error) => console.error("Error in auto-refresh:", error)
+            );
          }
-      }, 30000); // Update every 30 seconds
+      }, 20000); // Update every 20 seconds
 
       return () => clearInterval(intervalId);
    }, [
@@ -771,6 +1145,8 @@ const WalletPage = () => {
       previousBalance,
       contextAssets,
       calculateBalance,
+      fetchEthPrice,
+      ethPrice,
    ]);
 
    // Prepare data for display
@@ -783,6 +1159,23 @@ const WalletPage = () => {
    return (
       <div className="wallet-page">
          {isLoading && <LoadingModal />}
+
+         {/* Toast Notification */}
+         {toast && (
+            <Toast
+               message={toast.message}
+               type={toast.type}
+               onClose={closeToast}
+            />
+         )}
+
+         {/* Session Expiry Warning */}
+         <SessionExpiryModal
+            isOpen={sessionWarning}
+            onExtend={handleExtendSession}
+            onLogout={handleLogout}
+         />
+
          {/* Send Modal */}
          <SendModal
             isOpen={isSendModalOpen}
@@ -791,6 +1184,7 @@ const WalletPage = () => {
             onSend={handleSendTransaction}
             network={networkName}
          />
+
          {/* Receive Modal */}
          <ReceiveModal
             isOpen={isReceiveModalOpen}
@@ -799,33 +1193,27 @@ const WalletPage = () => {
             network={networkName}
          />
 
-         {/* Network status bar */}
+         {/* Network status bar with session info */}
          <div className="network-status-bar">
             <NetworkStatus status={networkStatus} network={network} />
+            <div className="session-info">
+               <Clock size={14} />
+               <span>{timeRemaining}</span>
+            </div>
             <NetworkSwitch
                currentNetwork={networkName}
                onSwitch={handleNetworkSwitch}
             />
          </div>
+
          <div className="wallet-header">
             <div className="wallet-logo">
-               <svg
-                  className="scroll-logo"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  height="24">
-                  <path
-                     fill="#FFAC3A"
-                     d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,18c-3.31,0-6-2.69-6-6
-            s2.69-6,6-6s6,2.69,6,6S15.31,18,12,18z"
-                  />
-                  <path
-                     fill="#FFAC3A"
-                     d="M12,8v8M8,12h8"
-                     stroke="#FFAC3A"
-                     strokeWidth="2"
-                  />
-               </svg>
+               <img
+                  src="src/assets/logo.png"
+                  alt=""
+                  srcset=""
+                  className="range-logo"
+               />
             </div>
             <div className="wallet-account">
                <div className="account-avatar">
@@ -837,18 +1225,21 @@ const WalletPage = () => {
                </div>
                <button
                   className="copy-address"
-                  onClick={copyAddressToClipboard}>
+                  onClick={copyAddressToClipboard}
+                  aria-label="Copy wallet address">
                   <Copy size={16} />
                </button>
             </div>
          </div>
+
          <div className="wallet-balance">
             <div className="balance-label">
                <span>Total Balance</span>
                <button
                   className="refresh-button"
                   onClick={handleRefresh}
-                  disabled={refreshing}>
+                  disabled={refreshing}
+                  aria-label="Refresh balance">
                   <RefreshCw
                      size={18}
                      className={refreshing ? "refreshing" : ""}
@@ -859,15 +1250,26 @@ const WalletPage = () => {
                <span>{displayBalance}</span>
                <button
                   className="toggle-visibility"
-                  onClick={toggleBalanceVisibility}>
+                  onClick={toggleBalanceVisibility}
+                  aria-label={hideBalance ? "Show balance" : "Hide balance"}>
                   {hideBalance ? <Eye size={18} /> : <EyeOff size={18} />}
                </button>
             </div>
+            {/* // Eths balance Change not displaying */}
             <div className="balance-change">
                <span className="change-amount">{changeAmount}</span>
                <span className="change-percent">{changePercent}</span>
             </div>
+            {ethPrice && (
+               <div className="eth-price-info" style={{ display: "none" }}>
+                  <span>ETH: ${ethPrice.toFixed(2)}</span>
+                  <span className="price-updated">
+                     Last updated: {new Date().toLocaleTimeString()}
+                  </span>
+               </div>
+            )}
          </div>
+
          <div className="wallet-actions">
             <button
                className="action-button send"
@@ -881,7 +1283,7 @@ const WalletPage = () => {
                onClick={() => setIsReceiveModalOpen(true)}
                aria-label="Receive cryptocurrency">
                <ArrowDown size={20} />
-               RECIEVE
+               RECEIVE
             </button>
 
             <button
@@ -890,13 +1292,22 @@ const WalletPage = () => {
                <DollarSign size={20} />
                BUY
             </button>
+
+            <Link to="/exchange" className="action-button exchange">
+               <button aria-label="Exchange cryptocurrency">
+                  <RefreshCw size={20} />
+                  EXCHANGE
+               </button>
+            </Link>
+
             <button
                className="action-button exchange"
+               onClick={() => navigate("/exchange")}
                aria-label="Exchange cryptocurrency">
-               <RefreshCw size={20} />
-               EXCHANGE
+               <RefreshCw size={20} /> EXCHANGE
             </button>
          </div>
+
          <div className="wallet-content">
             <div className="wallet-section">
                <div className="section-header">
@@ -908,6 +1319,7 @@ const WalletPage = () => {
                         <AssetItem
                            key={`${asset.symbol}-${index}`}
                            asset={asset}
+                           onSelect={() => setIsSendModalOpen(true)}
                         />
                      ))
                   ) : (
@@ -917,15 +1329,23 @@ const WalletPage = () => {
                   )}
                </div>
             </div>
+
             <div className="wallet-section">
                <div className="section-header">
                   <h3>Activity</h3>
+                  <button
+                     className="view-all-button"
+                     onClick={() => {
+                        /* Navigate to full transaction history */
+                     }}>
+                     View All
+                  </button>
                </div>
                <div className="section-content">
                   {walletTransactions.length > 0 ? (
                      walletTransactions.map((tx, index) => (
                         <TransactionItem
-                           key={`tx-${index}`}
+                           key={`tx-${tx.txHash || index}`}
                            transaction={tx}
                            network={networkName}
                         />
@@ -936,14 +1356,10 @@ const WalletPage = () => {
                      </div>
                   )}
                </div>
-               <button
-                  className="btn btn-secondary"
-                  onClick={() => setStatus(null)}>
-                  Try Again
-               </button>
             </div>
          </div>
       </div>
    );
 };
+
 export default WalletPage;

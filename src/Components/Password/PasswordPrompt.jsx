@@ -52,7 +52,7 @@ const PasswordPrompt = ({ onConnect }) => {
                placeholder="Enter password"
                value={password}
                onChange={(e) => setPassword(e.target.value)}
-               className="password-input"
+               className="password-input focus:outline-none"
             />
             <button
                className="show-password-toggle"
@@ -67,16 +67,18 @@ const PasswordPrompt = ({ onConnect }) => {
                backgroundColor: getPasswordStrengthColor(),
             }}
          />
-         <button
-            onClick={handleConnectClick}
-            disabled={loading}
-            className="connect-button">
-            {loading ? (
-               <AiOutlineLoading3Quarters className="loader animate-spin" />
-            ) : (
-               "Connect"
-            )}
-         </button>
+         <div className="w-full">
+            <button
+               onClick={handleConnectClick}
+               disabled={loading}
+               className="primary-btn">
+               {loading ? (
+                  <AiOutlineLoading3Quarters className="loader animate-spin" />
+               ) : (
+                  "Connect"
+               )}
+            </button>
+         </div>
          {error && <p className="error-message">{error}</p>}
       </div>
    );

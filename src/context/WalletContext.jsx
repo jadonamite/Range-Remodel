@@ -233,13 +233,16 @@ export const WalletProvider = ({ children }) => {
          );
          const ethPriceData = await ethPriceResponse.json();
          const ethPrice = ethPriceData.ethereum.usd;
-         const ethChange = ethPriceData.ethereum.usd_24h_change;
-         const ethChangePercent =
-            ethPriceData.ethereum.usd_24h_change_percentage;
+         const ethChangePercent = ethPriceData.ethereum.usd_24h_change || 0;
 
+         // Calculate the previous price based on the current price and percentage change
+         const previousPrice = ethPrice / (1 + ethChangePercent / 100);
+         // Calculate the actual dollar change
+         const ethChange = ethPrice - previousPrice;
          const ethBalanceWei = await provider.getBalance(walletAddress);
          const ethBalanceFormatted = ethers.utils.formatEther(ethBalanceWei);
          const ethValueUSD = parseFloat(ethBalanceFormatted) * ethPrice;
+         const myBalanceChange = ethChange * parseFloat(ethBalanceFormatted);
 
          tokenList.push({
             name: "Ethereum",
@@ -247,12 +250,15 @@ export const WalletProvider = ({ children }) => {
             amount: ethBalanceFormatted,
             displayAmount: `${parseFloat(ethBalanceFormatted).toFixed(4)} ETH`,
             value: `$${ethValueUSD.toFixed(2)}`,
-            change: `<span class="math-inline">\{ethChange \> 0 ? '\+' \: ''\}</span>${ethChange.toFixed(
-               2
-            )}`,
-            changePercent: `<span class="math-inline">\{ethChangePercent \> 0 ? '\+' \: ''\}</span>{ethChangePercent.toFixed(2)}%`,
+            change: `${
+               myBalanceChange >= 0 ? "+" : ""
+            }$${myBalanceChange.toFixed(2)}`,
+            changePercent: `${
+               ethChangePercent >= 0 ? "+" : ""
+            }${ethChangePercent.toFixed(2)}%`,
             icon: "ethereum",
          });
+
          for (const [name, token] of Object.entries(SCROLL_TOKENS)) {
             try {
                const contract = new ethers.Contract(
