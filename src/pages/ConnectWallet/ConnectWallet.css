@@ -1,0 +1,62 @@
+.container {
+   width: 25rem;
+   height: 85vh;
+   background-color: rgba(30, 30, 30, 0.8);
+   box-shadow: 3px 4px 4px #181818cc;
+   border-radius: 3rem;
+}
+.primary-btn {
+   display: inline-block;
+   color: #fff;
+   width: 90%;
+   padding: 0.75rem 1rem;
+   border-radius: 9999px;
+   background-image: linear-gradient(to right, #9333ea, #2dd4bf);
+   font-weight: 500;
+   transition: all 400ms ease-in-out;
+}
+.primary-btn:hover {
+   color: #fff;
+   opacity: 0.9;
+   scale: 1.05;
+
+   background-image: linear-gradient(to right, #2dd4bf, #9333ea);
+}
+.tertiary-btn {
+   display: inline-block;
+   color: #fff;
+   width: 90%;
+   padding: 0.75rem 1rem;
+   border-radius: 9999px;
+   font-weight: 500;
+   transition: all 400ms ease-in-out;
+   position: relative;
+   padding: 0.75rem 1rem;
+   border-radius: 9999px;
+   background-color: transparent;
+   font-weight: 500;
+   z-index: 1;
+}
+
+.tertiary-btn::before {
+   content: "";
+   position: absolute;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+   border-radius: 9999px;
+   padding: 2px;
+   background-image: linear-gradient(to right, #2dd4bf, #9333ea);
+   -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+   -webkit-mask-composite: xor;
+   mask-composite: exclude;
+   z-index: -1;
+}
+
+.tertiary-btn:hover {
+   scale: 1.05;
+   opacity: 0.9;
+   color: #fff;
+}

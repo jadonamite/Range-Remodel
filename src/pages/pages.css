@@ -32,11 +32,25 @@ body {
 .error {
    margin-left: 2rem;
 }
-.password-input {
+div .password-input {
    width: 90%;
    background-color: #284b6e;
-   padding: 0.8rem 1rem;
-   border-radius: 15px;
+   padding: 0.1rem 0.8rem;
+   min-height: 3rem;
+   display: flex;
+   align-items: center;
+}
+.password-input > input {
+   background-color: #284b6e;
+   color: white;
+   border: none;
+   padding: 0.5rem 1.2rem;
+   width: 90%;
+   height: 90%;
+}
+.password-input > input :focus-visible {
+   outline: 2px solid #9333ea;
+   outline: none;
 }
 
 .bottom-text span {
@@ -109,9 +123,6 @@ svg {
    padding: 3rem;
 }
 
-/* .w-full .primary-btn {
-   color: ;
-} */
 @keyframes pulse {
    0% {
       transform: scale(1);
