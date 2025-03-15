@@ -1,0 +1,164 @@
+/* Custom CSS for Token Swap Interface */
+
+/* Base styles */
+:root {
+   --bg-gradient-start: #f5f7fa;
+   --bg-gradient-end: #eef2f7;
+   --primary-gradient-start: #6366f1;
+   --primary-gradient-end: #3b82f6;
+   --secondary-gradient-start: #10b981;
+   --secondary-gradient-end: #059669;
+   --accent-gradient-start: #8b5cf6;
+   --accent-gradient-end: #6366f1;
+   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+   --transition-fast: 150ms;
+   --transition-normal: 300ms;
+   --transition-slow: 500ms;
+}
+
+/* Custom background */
+.bg-custom-bg {
+   background: linear-gradient(
+      to bottom,
+      var(--bg-gradient-start),
+      var(--bg-gradient-end)
+   );
+}
+
+/* Card hover effects */
+.card-hover {
+   transition: all var(--transition-normal) ease;
+}
+
+.card-hover:hover {
+   transform: translateY(-4px);
+   box-shadow: var(--shadow-lg);
+}
+
+/* Button styles */
+button {
+   transition: all var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:active {
+   transform: scale(0.97);
+}
+
+/* Animated loading spinner */
+@keyframes spin {
+   to {
+      transform: rotate(360deg);
+   }
+}
+
+.animate-spin {
+   animation: spin 1s linear infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+   from {
+      opacity: 0;
+      transform: translateY(10px);
+   }
+   to {
+      opacity: 1;
+      transform: translateY(0);
+   }
+}
+
+.animate-fadeIn {
+   animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+/* Dropdown selection styling */
+select {
+   appearance: none;
+   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+   background-repeat: no-repeat;
+   background-position: right 0.75rem center;
+   background-size: 1rem;
+   padding-right: 2.5rem;
+}
+
+/* Token list items */
+.token-item {
+   display: flex;
+   align-items: center;
+   padding: 0.5rem;
+   border-radius: 0.5rem;
+   transition: background-color var(--transition-fast) ease;
+}
+
+.token-item:hover {
+   background-color: rgba(243, 244, 246, 1);
+}
+
+/* Focus states */
+input:focus,
+select:focus {
+   outline: none;
+   border-color: var(--primary-gradient-start);
+   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+   width: 6px;
+   height: 6px;
+}
+
+::-webkit-scrollbar-track {
+   background: #f1f1f1;
+   border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+   background: #cdcdcd;
+   border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+   background: #a8a8a8;
+}
+
+/* Quote item pulse animation on select */
+@keyframes pulseBorder {
+   0% {
+      box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+   }
+   70% {
+      box-shadow: 0 0 0 6px rgba(99, 102, 241, 0);
+   }
+   100% {
+      box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+   }
+}
+
+.selected-quote {
+   animation: pulseBorder 2s infinite;
+}
+
+/* Menu styling */
+.menu-active {
+   position: relative;
+}
+
+.menu-active::after {
+   content: "";
+   position: absolute;
+   bottom: -4px;
+   left: 0;
+   width: 100%;
+   height: 2px;
+   background: linear-gradient(
+      to right,
+      var(--primary-gradient-start),
+      var(--primary-gradient-end)
+   );
+   border-radius: 2px;
+}
