@@ -622,9 +622,11 @@ const NetworkSwitch = memo(({ currentNetwork, onSwitch }) => {
       <div className="network-switch">
          <button className="network-current" onClick={() => setIsOpen(!isOpen)}>
             {currentNetwork}
-            <ArrowDown size={12} className={isOpen ? "rotated" : ""} />
          </button>
-
+         <ArrowDown
+            size={12}
+            className={isOpen ? "rotated text-[#ff9900]" : "text-[#ff9900]"}
+         />
          {isOpen && (
             <div className="network-dropdown">
                {networks.map((network) => (

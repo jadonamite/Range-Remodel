@@ -41,7 +41,10 @@
    margin-bottom: 16px;
    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
-
+.network-current {
+   color: #ff9900;
+   font-size: 0.9rem;
+}
 .network-status {
    display: flex;
    align-items: center;
@@ -72,6 +75,9 @@
 /* Network switch */
 .network-switch {
    position: relative;
+   display: flex;
+   gap: 6px;
+   align-items: center;
 }
 
 .network-switch-button {
