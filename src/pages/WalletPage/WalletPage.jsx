@@ -1339,7 +1339,7 @@ const WalletPage = () => {
                BUY
             </button>
 
-            <Link to="" className="action-button exchange">
+            <Link to="/exchange" className="action-button exchange">
                <button aria-label="Exchange cryptocurrency">
                   <RefreshCw size={20} />
                   EXCHANGE
