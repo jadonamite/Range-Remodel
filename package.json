@@ -10,13 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@reservoir0x/relay-sdk": "^1.6.8",
+    "@reservoir0x/relay-kit-hooks": "^1.8.4",
+    "@tanstack/react-query": "^5.68.0",
     "axios": "^1.8.1",
+    "framer-motion": "^12.5.0",
     "lucide-react": "^0.479.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "motion": "^12.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",
-    "viem": "^2.23.10",
+    "viem": "^2.23.11",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {

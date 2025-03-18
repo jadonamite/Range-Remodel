@@ -41,7 +41,10 @@
    margin-bottom: 16px;
    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
-
+.network-current {
+   color: #ff9900;
+   font-size: 0.9rem;
+}
 .network-status {
    display: flex;
    align-items: center;
@@ -72,6 +75,9 @@
 /* Network switch */
 .network-switch {
    position: relative;
+   display: flex;
+   gap: 6px;
+   align-items: center;
 }
 
 .network-switch-button {
@@ -751,11 +757,22 @@
    align-items: center;
    text-align: center;
    padding: 20px;
+   min-height: 250px;
 }
 
 .status-container h4 {
    margin: 16px 0 8px;
    font-size: 18px;
+}
+.status-container.pending {
+   gap: 16px;
+}
+
+.status-container.pending .loading-spinner {
+   margin-bottom: 8px;
+   display: flex;
+   justify-content: center;
+   min-height: 250px;
 }
 
 .spinning {
@@ -885,7 +902,178 @@
    font-size: 14px;
    color: var(--text-secondary);
 }
+/* buy-modal-animations.css */
 
+/* Container styling */
+.coming-soon-container {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   text-align: center;
+   padding: 20px;
+   min-height: 300px;
+}
+
+/* Animation container */
+.animation-container {
+   position: relative;
+   margin: 20px 0 30px;
+   width: 100px;
+   height: 100px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+/* Dollar icon styling and animation */
+.dollar-icon {
+   color: var(--scroll-primary, #f0a500);
+   position: relative;
+   z-index: 2;
+   animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+   0% {
+      transform: translateY(0px);
+   }
+   50% {
+      transform: translateY(-10px);
+   }
+   100% {
+      transform: translateY(0px);
+   }
+}
+
+/* Pulsing circle animation */
+.pulse-circle {
+   position: absolute;
+   width: 80px;
+   height: 80px;
+   border-radius: 50%;
+   background-color: rgba(240, 165, 0, 0.1);
+   z-index: 1;
+   animation: pulse 2s ease-out infinite;
+}
+
+@keyframes pulse {
+   0% {
+      transform: scale(0.8);
+      opacity: 0.8;
+   }
+   50% {
+      transform: scale(1.2);
+      opacity: 0.4;
+   }
+   100% {
+      transform: scale(0.8);
+      opacity: 0.8;
+   }
+}
+
+/* Text styling */
+.coming-soon-title {
+   font-size: 24px;
+   font-weight: 600;
+   margin-bottom: 16px;
+   color: var(--text-primary, #333);
+}
+
+.coming-soon-text {
+   color: var(--text-secondary, #666);
+   margin-bottom: 24px;
+   line-height: 1.5;
+}
+
+/* Features preview */
+.features-preview {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   gap: 12px;
+   background-color: rgba(0, 0, 0, 0.02);
+   border-radius: 8px;
+   padding: 16px;
+   width: 100%;
+   margin-bottom: 24px;
+   text-align: left;
+}
+
+.feature-item {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+}
+
+.feature-dot {
+   width: 8px;
+   height: 8px;
+   background-color: var(--scroll-primary, #f0a500);
+   border-radius: 50%;
+   display: inline-block;
+   animation: blink 3s infinite alternate;
+}
+
+.feature-item:nth-child(2) .feature-dot {
+   animation-delay: 1s;
+}
+
+.feature-item:nth-child(3) .feature-dot {
+   animation-delay: 2s;
+}
+
+@keyframes blink {
+   0%,
+   80% {
+      opacity: 1;
+   }
+   90% {
+      opacity: 0.4;
+   }
+   100% {
+      opacity: 1;
+   }
+}
+
+/* Button hover effect */
+.coming-soon-container .btn-primary {
+   position: relative;
+   overflow: hidden;
+   transition: all 0.3s;
+}
+
+.coming-soon-container .btn-primary:after {
+   content: "";
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   width: 5px;
+   height: 5px;
+   background: rgba(255, 255, 255, 0.5);
+   opacity: 0;
+   border-radius: 100%;
+   transform: scale(1, 1) translate(-50%);
+   transform-origin: 50% 50%;
+}
+
+.coming-soon-container .btn-primary:hover:after {
+   animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+   0% {
+      transform: scale(0, 0);
+      opacity: 0.5;
+   }
+   20% {
+      transform: scale(25, 25);
+      opacity: 0.3;
+   }
+   100% {
+      opacity: 0;
+      transform: scale(40, 40);
+   }
+}
 /* Desktop and responsiveness */
 @media (min-width: 768px) {
    .wallet-page {

@@ -1,11 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
-import {
-   createClient,
-   convertViemChainToRelayChain,
-   TESTNET_RELAY_API,
-} from "@reservoir0x/relay-sdk";
-import { defineChain } from "viem";
 
 export const WalletContext = createContext();
 
@@ -22,28 +16,6 @@ const SCROLL_NETWORKS = {
       },
    },
 };
-
-const scrollSepolia = defineChain({
-   id: 534351,
-   name: "Scroll Sepolia",
-   network: "scroll-sepolia",
-   nativeCurrency: {
-      decimals: 18,
-      name: "ETH",
-      symbol: "ETH",
-   },
-   rpcUrls: {
-      default: {
-         http: ["https://sepolia-rpc.scroll.io"],
-      },
-   },
-   blockExplorers: {
-      default: {
-         name: "Scrollscan",
-         url: "https://sepolia.scrollscan.com",
-      },
-   },
-});
 
 const SCROLL_TOKENS = {
    USDC: {
@@ -85,12 +57,6 @@ export const WalletProvider = ({ children }) => {
    const getProvider = () => {
       return new ethers.providers.JsonRpcProvider(network.rpcUrl);
    };
-
-   const relayClient = createClient({
-      baseApiUrl: TESTNET_RELAY_API,
-      source: "RangeWallet_v1",
-      chains: [convertViemChainToRelayChain(scrollSepolia)],
-   });
 
    const checkNetworkStatus = async () => {
       try {
@@ -517,36 +483,6 @@ export const WalletProvider = ({ children }) => {
          };
       }
    };
-   const getSwapQuotes = async (fromTokenAddress, toTokenAddress, amount) => {
-      try {
-         const amountBigInt = ethers.utils.parseUnits(amount, 18).toBigInt();
-
-         const quotes = await relayClient.swap.getQuotes({
-            fromTokenAddress,
-            toTokenAddress,
-            amount: amountBigInt,
-            userAddress: address,
-         });
-
-         return quotes;
-      } catch (error) {
-         console.error("Error getting swap quotes:", error);
-         throw error;
-      }
-   };
-   const executeSwap = async (quote) => {
-      try {
-         const swapResult = await relayClient.swap.executeSwap({
-            quote: quote,
-            userAddress: address,
-         });
-
-         return swapResult;
-      } catch (error) {
-         console.error("Error executing swap:", error);
-         throw error;
-      }
-   };
 
    const disconnectWallet = () => {
       setWallet(null);
@@ -605,7 +541,6 @@ export const WalletProvider = ({ children }) => {
       network,
       networkStatus,
       isConnected,
-      relayClient,
       createWallet,
       importWallet,
       loadWallet,
@@ -617,8 +552,6 @@ export const WalletProvider = ({ children }) => {
       switchNetwork,
       checkNetworkStatus,
       fetchTokenBalances,
-      getSwapQuotes,
-      executeSwap,
       SCROLL_TOKENS,
    };
 
@@ -626,3 +559,4 @@ export const WalletProvider = ({ children }) => {
       <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
    );
 };
+export const useWallet = () => useContext(WalletContext);

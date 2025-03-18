@@ -443,7 +443,7 @@ const SendModal = ({ isOpen, onClose, assets, onSend, network }) => {
                   <div className="amount-input-wrapper">
                      <input
                         id="amount"
-                        className="form-control"
+                        className="form-control text-[#f3f3f3]"
                         placeholder="0.0"
                         type="number"
                         step="0.000001"
@@ -454,7 +454,7 @@ const SendModal = ({ isOpen, onClose, assets, onSend, network }) => {
                      <span className="amount-suffix">{selectedAsset}</span>
                      <button
                         type="button"
-                        className="max-button"
+                        className="max-button ml-10 text-[#6d6d6d]"
                         onClick={handleUseMax}>
                         MAX
                      </button>
@@ -568,6 +568,42 @@ const ReceiveModal = ({ isOpen, onClose, address, network }) => {
       </Modal>
    );
 };
+const BuyModal = ({ isOpen, onClose }) => {
+   return (
+      <Modal isOpen={isOpen} onClose={onClose} title="Buy Crypto">
+         <div className="coming-soon-container">
+            <div className="animation-container">
+               <DollarSign size={48} className="dollar-icon" />
+               <div className="pulse-circle"></div>
+            </div>
+            <h3 className="coming-soon-title">Coming Soon!</h3>
+            <p className="coming-soon-text">
+               Our crypto purchasing functionality is currently under
+               development. We're working hard to bring you a seamless buying
+               experience directly within your wallet.
+            </p>
+            <div className="features-preview">
+               <div className="feature-item">
+                  <span className="feature-dot"></span>
+                  <span>Direct purchases with credit/debit cards</span>
+               </div>
+               <div className="feature-item">
+                  <span className="feature-dot"></span>
+                  <span>Competitive exchange rates</span>
+               </div>
+               <div className="feature-item">
+                  <span className="feature-dot"></span>
+                  <span>Multiple payment methods</span>
+               </div>
+            </div>
+            <button className="btn btn-primary" onClick={onClose}>
+               Got it
+            </button>
+         </div>
+      </Modal>
+   );
+};
+
 // Network Switch: Allows switching between mainnet and testnet.
 const NetworkSwitch = memo(({ currentNetwork, onSwitch }) => {
    const [isOpen, setIsOpen] = useState(false);
@@ -586,9 +622,11 @@ const NetworkSwitch = memo(({ currentNetwork, onSwitch }) => {
       <div className="network-switch">
          <button className="network-current" onClick={() => setIsOpen(!isOpen)}>
             {currentNetwork}
-            <ArrowDown size={12} className={isOpen ? "rotated" : ""} />
          </button>
-
+         <ArrowDown
+            size={12}
+            className={isOpen ? "rotated text-[#ff9900]" : "text-[#ff9900]"}
+         />
          {isOpen && (
             <div className="network-dropdown">
                {networks.map((network) => (
@@ -886,6 +924,7 @@ const WalletPage = () => {
    const [hideBalance, setHideBalance] = useState(false);
    const [isSendModalOpen, setIsSendModalOpen] = useState(false);
    const [isReceiveModalOpen, setIsReceiveModalOpen] = useState(false);
+   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
    const [refreshing, setRefreshing] = useState(false);
    const [timeRemaining, setTimeRemaining] = useState("");
    const [ethPrice, setEthPrice] = useState(null);
@@ -986,7 +1025,7 @@ const WalletPage = () => {
       }
    }, [address]);
 
-   // Toggle balance visibility
+   // Toggle balance visibilitySendModal
    const toggleBalanceVisibility = useCallback(() => {
       setHideBalance((prev) => !prev);
    }, []);
@@ -1193,6 +1232,12 @@ const WalletPage = () => {
             network={networkName}
          />
 
+         {/* Buy Modal */}
+         <BuyModal
+            isOpen={isBuyModalOpen}
+            onClose={() => setIsBuyModalOpen(false)}
+         />
+
          {/* Network status bar with session info */}
          <div className="network-status-bar">
             <NetworkStatus status={networkStatus} network={network} />
@@ -1211,7 +1256,7 @@ const WalletPage = () => {
                <img
                   src="src/assets/logo.png"
                   alt=""
-                  srcset=""
+                  srcSet=""
                   className="range-logo"
                />
             </div>
@@ -1288,24 +1333,24 @@ const WalletPage = () => {
 
             <button
                className="action-button buy"
+               onClick={() => setIsBuyModalOpen(true)}
                aria-label="Buy cryptocurrency">
                <DollarSign size={20} />
                BUY
             </button>
 
-            <Link to="/exchange" className="action-button exchange">
+            <Link to="/explore" className="action-button exchange">
+               <button aria-label="Exchange cryptocurrency">
+                  <RefreshCw size={20} />
+                  EXPLORE
+               </button>
+            </Link>
+            {/* <Link to="/exchange" className="action-button exchange">
                <button aria-label="Exchange cryptocurrency">
                   <RefreshCw size={20} />
                   EXCHANGE
                </button>
-            </Link>
-
-            <button
-               className="action-button exchange"
-               onClick={() => navigate("/exchange")}
-               aria-label="Exchange cryptocurrency">
-               <RefreshCw size={20} /> EXCHANGE
-            </button>
+            </Link> */}
          </div>
 
          <div className="wallet-content">
