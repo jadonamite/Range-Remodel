@@ -1,5 +1,5 @@
 import React from "react";
-import SwapComponent from "../ExchangeComponent/Utilities/SwapComponent.jsx";
+import SwapComponent from "./Utilities/SwapComponent.jsx";
 
 export default function Exchange() {
    <div className="row">

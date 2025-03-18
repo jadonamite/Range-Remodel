@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useWallet } from "../../context/WalletContext";
-import { useToken } from "@reservoir0x/relay-kit-hooks";
+import { useTokenList } from "@reservoir0x/relay-kit-hooks";
 
 const TokenSwapInput = ({ onSwapDetailsChange, availableTokens = [] }) => {
    const { account } = useWallet();
@@ -10,16 +10,18 @@ const TokenSwapInput = ({ onSwapDetailsChange, availableTokens = [] }) => {
    const [toToken, setToToken] = useState("");
    const [amount, setAmount] = useState("");
 
-   const { data: fromTokenData } = useToken({
-      address: fromToken,
+   // Fetch full token list for the chain
+   const { data: tokenListData } = useTokenList({
       chainId: 534351, // Scroll Sepolia
    });
 
-   const { data: toTokenData } = useToken({
-      address: toToken,
-      chainId: 534351, // Scroll Sepolia
-      enabled: Boolean(toToken),
-   });
+   // Filter token data for selected tokens
+   const fromTokenData = tokenListData?.find(
+      (token) => token.address.toLowerCase() === fromToken.toLowerCase()
+   );
+   const toTokenData = tokenListData?.find(
+      (token) => token.address.toLowerCase() === toToken.toLowerCase()
+   );
 
    useEffect(() => {
       if (fromToken && amount && toToken) {

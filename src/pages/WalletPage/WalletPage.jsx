@@ -1256,7 +1256,7 @@ const WalletPage = () => {
                <img
                   src="src/assets/logo.png"
                   alt=""
-                  srcset=""
+                  srcSet=""
                   className="range-logo"
                />
             </div>
@@ -1339,12 +1339,18 @@ const WalletPage = () => {
                BUY
             </button>
 
-            <Link to="/exchange" className="action-button exchange">
+            <Link to="/explore" className="action-button exchange">
+               <button aria-label="Exchange cryptocurrency">
+                  <RefreshCw size={20} />
+                  EXPLORE
+               </button>
+            </Link>
+            {/* <Link to="/exchange" className="action-button exchange">
                <button aria-label="Exchange cryptocurrency">
                   <RefreshCw size={20} />
                   EXCHANGE
                </button>
-            </Link>
+            </Link> */}
          </div>
 
          <div className="wallet-content">

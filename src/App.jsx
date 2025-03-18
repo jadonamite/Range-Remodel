@@ -17,6 +17,8 @@ import SendPage from "./pages/SendPage";
 import ReceivePage from "./pages/ReceivePage";
 import CreatingWalletPage from "./pages/CreatingWalletPage";
 import ConnectWallet from "./pages/ConnectWallet/ConnectWallet.jsx";
+import SwapBridgeApp from "./pages/RSwap/RSwap.jsx";
+import AnimatedNavigation from "./pages/Explore.jsx";
 
 function App() {
    return (
@@ -36,6 +38,8 @@ function App() {
                <Route path="/created" element={<WalletCreated />} />
                <Route path="/wallet" element={<WalletPage />} />
                <Route path="/exchange" element={<Exchange />} />
+               <Route path="/explore" element={<AnimatedNavigation />} />
+               <Route path="/rswap" element={<SwapBridgeApp />} />
                <Route path="/send" element={<SendPage />} />
                <Route path="/receive" element={<ReceivePage />} />
                <Route path="*" element={<Navigate to="/" />} />

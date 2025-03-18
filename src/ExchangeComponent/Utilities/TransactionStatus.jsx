@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useTransaction } from "@reservoir0x/relay-kit-hooks";
+import { useExecutionStatus } from "@reservoir0x/relay-kit-hooks";
 
 const TransactionStatus = ({ txHash, chainId = 534351 }) => {
    const [status, setStatus] = useState("pending");
    const [explorerUrl, setExplorerUrl] = useState("");
 
-   const { data: txData, isLoading } = useTransaction({
+   // Replace useTransaction with useExecutionStatus
+   const { data: txData, isLoading } = useExecutionStatus({
       hash: txHash,
       chainId,
       enabled: Boolean(txHash),
@@ -17,6 +18,7 @@ const TransactionStatus = ({ txHash, chainId = 534351 }) => {
       }
 
       if (txData) {
+         // Assuming txData.status works the same way
          if (txData.status === 1) {
             setStatus("success");
          } else if (txData.status === 0) {

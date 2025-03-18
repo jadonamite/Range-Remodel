@@ -559,3 +559,4 @@ export const WalletProvider = ({ children }) => {
       <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
    );
 };
+export const useWallet = () => useContext(WalletContext);
