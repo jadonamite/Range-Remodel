@@ -1,52 +1,49 @@
 import React from "react";
-import {
-   BrowserRouter as Router,
-   Routes,
-   Route,
-   Navigate,
-} from "react-router-dom";
-import { WalletProvider } from "./context/WalletContext.jsx";
-import CreateWalletPage from "./pages/CreatePassword.jsx";
-import ImportWalletPage from "./pages/ImportWalletPage";
-import WalletCreated from "./pages/WalletCreatedPage/WalletCreatedPage.jsx";
-import BackupPage from "./pages/BackupPage.jsx";
-import VerifyBackupPage from "./pages/VerifyPage";
-import WalletPage from "./pages/WalletPage/WalletPage.jsx";
-import Exchange from "./ExchangeComponent/Exchange.jsx";
-import SendPage from "./pages/SendPage";
-import ReceivePage from "./pages/ReceivePage";
-import CreatingWalletPage from "./pages/CreatingWalletPage";
-import ConnectWallet from "./pages/ConnectWallet/ConnectWallet.jsx";
-import SwapBridgeApp from "./pages/RSwap/RSwap.jsx";
-import AnimatedNavigation from "./pages/Explore.jsx";
+import { useWallet } from "./context/WalletContext";
+import SetupWizard from "./pages/SetupWizard";
+import Dashboard from "./components/Dashboard";
 
-function App() {
-   return (
-      <WalletProvider>
-         <Router>
-            <Routes>
-               <Route path="/" element={<ConnectWallet />} />
+const App = () => {
+   const { isConnected } = useWallet();
 
-               <Route path="/create" element={<CreateWalletPage />} />
-               <Route path="/import" element={<ImportWalletPage />} />
-               <Route
-                  path="/creating-wallet"
-                  element={<CreatingWalletPage />}
-               />
-               <Route path="/backup" element={<BackupPage />} />
-               <Route path="/verify" element={<VerifyBackupPage />} />
-               <Route path="/created" element={<WalletCreated />} />
-               <Route path="/wallet" element={<WalletPage />} />
-               <Route path="/exchange" element={<Exchange />} />
-               <Route path="/explore" element={<AnimatedNavigation />} />
-               <Route path="/rswap" element={<SwapBridgeApp />} />
-               <Route path="/send" element={<SendPage />} />
-               <Route path="/receive" element={<ReceivePage />} />
-               <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-         </Router>
-      </WalletProvider>
-   );
-}
+   return <>{isConnected ? <Dashboard /> : <SetupWizard />}</>;
+};
 
 export default App;
+
+// For Observation Purposes
+
+// import React from "react";
+// import {
+//    BrowserRouter as Router,
+//    Routes,
+//    Route,
+//    Navigate,
+// } from "react-router-dom";
+// import { WalletProvider } from "./context/WalletContext.jsx";
+// import WalletPage from "./pages/WalletPage/WalletPage.jsx";
+// import Exchange from "./ExchangeComponent/Exchange.jsx";
+// import SwapBridgeApp from "./pages/RSwap/RSwap.jsx";
+// import AnimatedNavigation from "./pages/Explore.jsx";
+
+// function App() {
+//    return (
+//       <WalletProvider>
+//          <Router>
+//             <Routes>
+//                <Route path="/" element={<Navigate to="/wallet" />} />
+//                <Route path="/created" element={<WalletCreated />} />
+//                <Route path="/wallet" element={<WalletPage />} />
+//                <Route path="/exchange" element={<Exchange />} />
+//                <Route path="/explore" element={<AnimatedNavigation />} />
+//                <Route path="/rswap" element={<SwapBridgeApp />} />
+//                <Route path="/send" element={<SendPage />} />
+//                <Route path="/receive" element={<ReceivePage />} />
+//                <Route path="*" element={<Navigate to="/" />} />
+//             </Routes>
+//          </Router>
+//       </WalletProvider>
+//    );
+// }
+
+// export default App;

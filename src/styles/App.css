@@ -1,8 +1,32 @@
-#root {
-   max-width: 1280px;
+/* src/styles/App.css */
+
+/* Basic resets or overrides */
+body {
+   margin: 0;
+   padding: 0;
+   font-family: "Inter", sans-serif;
+}
+
+/* Example modal background overlay (if you prefer external classes) */
+.modal-overlay {
+   position: fixed;
+   inset: 0;
+   z-index: 999;
+   background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Example modal content container */
+.modal-content {
+   background-color: #1f2937;
+   border-radius: 8px;
+   max-width: 500px;
    margin: 0 auto;
    padding: 2rem;
-   text-align: center;
+}
+
+/* Example button styling override */
+button {
+   transition: background-color 0.2s ease-in-out;
 }
 
 .logo {
