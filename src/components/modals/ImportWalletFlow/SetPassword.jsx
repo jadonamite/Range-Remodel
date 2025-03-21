@@ -1,4 +1,3 @@
-// src/components/modals/ImportWalletFlow/SetPassword.jsx
 import React, { useState, useEffect } from "react";
 import Modal from "../../common/Modal";
 import Input from "../../common/Input";
