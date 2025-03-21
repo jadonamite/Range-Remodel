@@ -6,6 +6,32 @@ body {
    padding: 0;
    font-family: "Inter", sans-serif;
 }
+.full-background {
+   background-image: url("assets/DesktopBackground.png"); /* Replace with your image path */
+   background-size: cover;
+   background-position: center;
+   background-repeat: no-repeat;
+   min-height: 100vh;
+   width: 100vw;
+   margin: 0;
+   padding: 0;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   position: relative;
+}
+
+.o-container {
+   width: 25rem;
+   min-height: 85vh;
+   background-color: hsla(0, 0%, 12%, 0.8);
+   box-shadow: 3px 4px 4px #1e1e1ecc;
+   border-radius: 3rem;
+   display: grid;
+   /* justify-content: space-between; */
+   align-items: center;
+}
 
 /* Example modal background overlay (if you prefer external classes) */
 .modal-overlay {
